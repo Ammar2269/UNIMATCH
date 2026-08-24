@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Find universities by tuition budget, monthly living budget, subject, and degree level — or browse a global directory of 9,000+ universities.">
+<title>UniMatch — University Finder</title>
+<script>
+(function(){
+  try{
+    var saved=localStorage.getItem('unimatchTheme');
+    var theme=saved||(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  }catch(e){}
+})();
+</script>
+<style>
+:root{
+  --bg1:#fffaf6;--bg2:#fff3ea;--bg3:#ffffff;--glow1:rgba(255,148,102,.16);--glow2:rgba(255,178,138,.14);
+  --panel:#fff2e7;--panel2:#ffe8d6;
+  --surface:rgba(255,255,255,.6);--surface-strong:rgba(255,255,255,.9);--surface-soft:rgba(255,255,255,.55);
+  --card-grad-1:rgba(255,255,255,.94);--card-grad-2:rgba(255,241,230,.9);
+  --country-grad-1:rgba(255,255,255,.9);--country-grad-2:rgba(255,238,225,.7);
+  --input-bg:#ffffff;
+  --text:#3a2a22;--text-soft:#4a352a;--muted:#8c7365;
+  --brand:#ff9466;--brand2:#ffb18a;--on-brand:#4a2410;--step-active-text:#fff8f3;
+  --good:#2f9e63;--warn:#a8690a;--bad:#c94f4f;
+  --good-bg:rgba(47,158,99,.13);--good-border:rgba(47,158,99,.32);--good-text:#1f7a4c;
+  --warn-bg:rgba(168,105,10,.14);--warn-border:rgba(168,105,10,.3);--warn-text:#8a5a10;
+  --bad-bg:rgba(201,79,79,.13);--bad-border:rgba(201,79,79,.3);--bad-text:#a23131;
+  --line:rgba(58,42,34,.13);--shadow:0 20px 55px rgba(255,148,102,.16);--radius:22px;
+  --eyebrow-bg:rgba(255,148,102,.1);--eyebrow-border:rgba(255,148,102,.32);--eyebrow-text:#a8481a;
+  --link-text:#7a3b14;--link-bg:rgba(255,148,102,.1);--link-bg-hover:rgba(255,148,102,.18);--link-border:rgba(255,148,102,.32);
+  --score-color:#c1631f;--program-name:#8a5a3f;--meta-label:#a37a5f;
+  --callout-warn-bg:rgba(255,209,140,.22);--callout-warn-border:rgba(168,105,10,.3);--callout-warn-text:#7a4a0c;--callout-warn-strong:#5c3608;
+  --callout-info-bg:rgba(255,148,102,.12);--callout-info-border:rgba(255,148,102,.35);--callout-info-text:#7a3b14;--callout-info-strong:#5c2c0f;
+  --empty-border:rgba(58,42,34,.28);--empty-bg:rgba(255,255,255,.4);
+  --chip-bg:rgba(255,255,255,.7);--chip-text:#6b4a38;--chip-selected-bg:rgba(255,148,102,.2);--chip-selected-border:rgba(255,148,102,.65);--chip-selected-text:#5c2c0f;
+  --stat-bg:rgba(255,255,255,.6);--stat-text:#5c4536;
+  --toggle-bg:rgba(255,255,255,.55);
+  --pill-bg:rgba(255,255,255,.6);--pill-text:#5c4536;
+  --meta-border:rgba(58,42,34,.1);--meta-bg:rgba(255,255,255,.55);
+  --dirpager-bg:rgba(255,255,255,.7);
+  --checklist-bg:rgba(255,255,255,.55);--progress-bg:rgba(255,255,255,.7);--checkitem-text:#4a352a;
+}
+html[data-theme="dark"]{
+  --bg1:#1f140d;--bg2:#2a1a10;--bg3:#170f0a;--glow1:rgba(255,148,102,.28);--glow2:rgba(255,120,80,.22);
+  --panel:#332014;--panel2:#3d2718;
+  --surface:rgba(255,148,102,.09);--surface-strong:rgba(255,148,102,.13);--surface-soft:rgba(255,148,102,.07);
+  --card-grad-1:rgba(51,32,20,.92);--card-grad-2:rgba(40,25,16,.96);
+  --country-grad-1:rgba(255,148,102,.08);--country-grad-2:rgba(255,148,102,.03);
+  --input-bg:#2c1c12;
+  --text:#fdece0;--text-soft:#f0d3bd;--muted:#c49b81;
+  --brand:#ff9466;--brand2:#ffb18a;--on-brand:#2c1206;--step-active-text:#2c1206;
+  --good:#4ade80;--warn:#ffcf7a;--bad:#ff8f8f;
+  --good-bg:rgba(74,222,128,.16);--good-border:rgba(74,222,128,.35);--good-text:#7be8a4;
+  --warn-bg:rgba(255,207,122,.16);--warn-border:rgba(255,207,122,.35);--warn-text:#ffd98f;
+  --bad-bg:rgba(255,143,143,.16);--bad-border:rgba(255,143,143,.35);--bad-text:#ff9d9d;
+  --line:rgba(255,178,138,.22);--shadow:0 20px 55px rgba(0,0,0,.5);
+  --eyebrow-bg:rgba(255,148,102,.18);--eyebrow-border:rgba(255,148,102,.45);--eyebrow-text:#ffc199;
+  --link-text:#ffbd94;--link-bg:rgba(255,148,102,.16);--link-bg-hover:rgba(255,148,102,.26);--link-border:rgba(255,148,102,.42);
+  --score-color:#ffb37a;--program-name:#f2bb95;--meta-label:#deae8c;
+  --callout-warn-bg:rgba(255,207,122,.16);--callout-warn-border:rgba(255,207,122,.38);--callout-warn-text:#ffdca0;--callout-warn-strong:#ffe9c2;
+  --callout-info-bg:rgba(255,148,102,.18);--callout-info-border:rgba(255,148,102,.45);--callout-info-text:#ffcaa6;--callout-info-strong:#ffdcc0;
+  --empty-border:rgba(255,178,138,.28);--empty-bg:rgba(255,148,102,.04);
+  --chip-bg:rgba(255,148,102,.09);--chip-text:#f0d3bd;--chip-selected-bg:rgba(255,148,102,.26);--chip-selected-border:rgba(255,148,102,.65);--chip-selected-text:#fff1e6;
+  --stat-bg:rgba(255,148,102,.09);--stat-text:#f5ddc9;
+  --toggle-bg:rgba(255,148,102,.07);
+  --pill-bg:rgba(255,148,102,.09);--pill-text:#f5ddc9;
+  --meta-border:rgba(255,178,138,.16);--meta-bg:rgba(255,148,102,.06);
+  --dirpager-bg:rgba(255,148,102,.1);
+  --checklist-bg:rgba(255,148,102,.05);--progress-bg:rgba(255,148,102,.1);--checkitem-text:#f0d3bd;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--text);background:
+ radial-gradient(circle at 15% 0%,var(--glow1),transparent 34%),
+ radial-gradient(circle at 85% 10%,var(--glow2),transparent 31%),linear-gradient(160deg,var(--bg1),var(--bg2) 55%,var(--bg3));min-height:100vh;transition:background .25s,color .25s}
+button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+a{color:inherit}.shell{width:min(1180px,calc(100% - 32px));margin:auto}
+nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:900;letter-spacing:-.04em;font-size:23px}.brand span{color:var(--brand)}
+.nav-right{display:flex;align-items:center;gap:14px}
+.nav-note{color:var(--muted);font-size:13px;text-align:right}
+.theme-toggle{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:999px;padding:9px 13px;font-size:14px;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.hero{padding:54px 0 30px}.eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--eyebrow-border);background:var(--eyebrow-bg);padding:8px 12px;border-radius:999px;color:var(--eyebrow-text);font-size:13px;font-weight:700}
+h1{font-size:clamp(42px,7vw,78px);line-height:.98;max-width:900px;letter-spacing:-.055em;margin:22px 0 18px}
+.hero p{max-width:760px;font-size:18px;line-height:1.65;color:var(--muted);margin:0}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.stat{border:1px solid var(--line);background:var(--stat-bg);padding:10px 13px;border-radius:14px;color:var(--stat-text);font-size:13px}
+
+.tabbar{display:flex;gap:8px;margin:34px 0 0;border-bottom:1px solid var(--line);padding-bottom:0}
+.tabbtn{background:transparent;border:0;border-bottom:2px solid transparent;color:var(--muted);font-weight:800;font-size:15px;padding:12px 6px;margin-bottom:-1px}
+.tabbtn.active{color:var(--text);border-bottom-color:var(--brand)}
+.tabpanel{display:none}.tabpanel.active{display:block}
+
+.finder{margin:26px 0 60px;background:linear-gradient(180deg,var(--card-grad-1),var(--card-grad-2));border:1px solid var(--line);border-radius:30px;box-shadow:var(--shadow);overflow:hidden}
+.finder-head{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap}
+.finder-head h2{margin:0;font-size:25px;letter-spacing:-.025em}.finder-head p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.steps{display:flex;gap:8px}.step{width:31px;height:31px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--muted);font-size:13px;font-weight:800}.step.active{background:var(--brand);color:var(--step-active-text);border-color:transparent}
+.callout{margin:16px 24px 0;border:1px solid var(--callout-warn-border);background:var(--callout-warn-bg);color:var(--callout-warn-text);border-radius:16px;padding:13px 15px;font-size:13px;line-height:1.55}
+.callout b{color:var(--callout-warn-strong)}
+.callout.info{border-color:var(--callout-info-border);background:var(--callout-info-bg);color:var(--callout-info-text)}
+.callout.info b{color:var(--callout-info-strong)}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:24px}
+.field{display:flex;flex-direction:column;gap:8px}.field.full{grid-column:1/-1}.field label{font-weight:750;font-size:14px}.hint{color:var(--muted);font-size:12px;line-height:1.45}
+input,select{width:100%;border:1px solid var(--line);background:var(--input-bg);color:var(--text);padding:13px 14px;border-radius:14px;outline:none}
+input:focus,select:focus{border-color:rgba(255,148,102,.8);box-shadow:0 0 0 3px rgba(255,148,102,.14)}
+.subjects{display:flex;flex-wrap:wrap;gap:9px}.chip{border:1px solid var(--line);background:var(--chip-bg);color:var(--chip-text);padding:10px 13px;border-radius:999px}.chip.selected{background:var(--chip-selected-bg);border-color:var(--chip-selected-border);color:var(--chip-selected-text)}
+.toggles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.toggle{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);background:var(--toggle-bg);padding:13px;border-radius:15px}.toggle input{width:auto;margin-top:3px}.toggle b{display:block;font-size:14px}.toggle span{display:block;color:var(--muted);font-size:12px;margin-top:3px;line-height:1.4}
+.form-actions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:10px;margin-top:4px}.primary,.secondary{border-radius:14px;padding:12px 17px;font-weight:800;border:1px solid var(--line)}.primary{background:linear-gradient(90deg,var(--brand),var(--brand2));color:var(--on-brand);border:0}.secondary{background:var(--surface);color:var(--text)}
+.results{padding:0 24px 24px}.results-top{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:6px 0 18px;flex-wrap:wrap}.results-top h2{margin:0;font-size:30px}.results-top p{margin:5px 0 0;color:var(--muted)}
+.summary-strip{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px}.summary-pill{border:1px solid var(--line);border-radius:999px;padding:9px 12px;font-size:13px;color:var(--pill-text);background:var(--pill-bg)}
+.country-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.country-card{border:1px solid var(--line);background:linear-gradient(180deg,var(--country-grad-1),var(--country-grad-2));border-radius:20px;padding:17px;text-align:left;color:var(--text);transition:.18s;position:relative;overflow:hidden}.country-card:hover{transform:translateY(-3px);border-color:rgba(255,148,102,.55)}
+.country-rank{position:absolute;top:13px;right:13px;border:1px solid var(--line);border-radius:999px;padding:5px 8px;font-size:11px;color:var(--muted)}.flag{font-size:38px}.country-card h3{margin:9px 0 5px;font-size:21px}.country-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}.matchline{display:flex;justify-content:space-between;gap:10px;margin-top:15px;align-items:center}.score{font-weight:900;color:var(--score-color)}.count{font-size:12px;color:var(--muted)}
+.empty{border:1px dashed var(--empty-border);border-radius:18px;padding:22px;color:var(--muted);line-height:1.6;background:var(--empty-bg)}
+.university-view{padding:0 24px 24px}.back{margin:0 0 16px}.country-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}.country-head h2{font-size:34px;margin:0}.country-head p{color:var(--muted);max-width:760px;line-height:1.55}.sort-note{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:9px 12px;border-radius:13px}
+.uni-list{display:grid;gap:15px}.uni-card{border:1px solid var(--line);background:var(--panel);border-radius:22px;padding:18px}.uni-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.uni-rank{font-size:12px;color:var(--on-brand);background:var(--brand);padding:7px 10px;border-radius:999px;font-weight:900;white-space:nowrap}.uni-card h3{margin:0 0 5px;font-size:22px}.program-name{color:var(--program-name);font-weight:650}.reason{margin:13px 0;border-left:3px solid var(--brand);padding:10px 12px;background:rgba(255,148,102,.1);border-radius:0 12px 12px 0;color:var(--text-soft);font-size:13px;line-height:1.5}
+.meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:9px}.meta{border:1px solid var(--meta-border);background:var(--meta-bg);padding:11px;border-radius:14px}.meta b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--meta-label);margin-bottom:5px}.meta span{font-size:13px;line-height:1.4}.notes{margin-top:12px;color:var(--text-soft);line-height:1.58;font-size:14px}.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.links a{text-decoration:none;border:1px solid var(--link-border);background:var(--link-bg);padding:8px 10px;border-radius:999px;font-size:12px;color:var(--link-text)}.links a:hover{background:var(--link-bg-hover)}
+.badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);padding:6px 9px;border-radius:999px;font-size:11px}.badge.good{color:var(--good-text);background:var(--good-bg);border-color:var(--good-border)}.badge.warn{color:var(--warn-text);background:var(--warn-bg);border-color:var(--warn-border)}.badge.bad{color:var(--bad-text);background:var(--bad-bg);border-color:var(--bad-border)}
+
+.directory{margin:26px 0 60px;background:linear-gradient(180deg,var(--card-grad-1),var(--card-grad-2));border:1px solid var(--line);border-radius:30px;box-shadow:var(--shadow);overflow:hidden}
+.dir-controls{display:grid;grid-template-columns:2fr 1fr;gap:14px;padding:24px}
+@media(max-width:720px){.dir-controls{grid-template-columns:1fr}}
+.dir-meta{padding:0 24px 8px;color:var(--muted);font-size:13px}
+.dir-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;padding:8px 24px 6px}
+.dir-card{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:14px}
+.dir-card .country-tag{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 9px;margin-bottom:8px}
+.dir-card h4{margin:0 0 8px;font-size:15px;line-height:1.35}
+.dir-card a{font-size:12px;color:var(--link-text);text-decoration:none;border:1px solid var(--link-border);background:var(--link-bg);padding:6px 9px;border-radius:999px;display:inline-flex;gap:5px}
+.dir-card a:hover{background:var(--link-bg-hover)}
+.dir-pager{display:flex;justify-content:center;align-items:center;gap:12px;padding:20px 24px 26px;color:var(--muted);font-size:13px}
+.dir-pager button{border:1px solid var(--line);background:var(--dirpager-bg);color:var(--text);border-radius:12px;padding:9px 14px;font-weight:700}
+.dir-pager button:disabled{opacity:.35;cursor:default}
+
+.checklist{margin:28px 0 50px;border:1px solid var(--line);background:var(--checklist-bg);border-radius:24px;padding:20px}.check-head{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}.check-head h2{margin:0}.progress{width:min(300px,100%);height:10px;border:1px solid var(--line);background:var(--progress-bg);border-radius:999px;overflow:hidden}.progress div{height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--good))}.check-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:12px;margin-top:16px}.check-group{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:14px}.check-group h3{font-size:15px;margin:0 0 10px}.checkitem{display:flex;gap:8px;align-items:flex-start;color:var(--checkitem-text);font-size:13px;line-height:1.4;margin:9px 0}.checkitem input{width:auto;margin-top:2px}.checkitem.done span{text-decoration:line-through;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:25px 0 38px;color:var(--muted);font-size:13px;line-height:1.6}
+@media(max-width:720px){.form-grid{grid-template-columns:1fr}.field.full,.form-actions{grid-column:auto}.toggles{grid-template-columns:1fr}.finder-head,.form-grid,.results,.university-view{padding-left:17px;padding-right:17px}.hero{padding-top:35px}.nav-note{display:none}.uni-top{flex-direction:column}.form-actions{justify-content:stretch}.form-actions button{flex:1}.dir-controls,.dir-meta,.dir-grid,.dir-pager{padding-left:17px;padding-right:17px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav><div class="brand">Uni<span>Match</span></div><div class="nav-right"><div class="nav-note">Budget-based matching for verified programs<br>+ a global directory to browse</div><button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode"><span id="themeIcon">🌙</span><span id="themeLabel">Dark</span></button></div></nav>
+<section class="hero">
+  <span class="eyebrow">🎓 Free & open university search</span>
+  <h1>Find a university that fits your real budget.</h1>
+  <p>Enter what you can spend, what you want to study, and your degree level. UniMatch ranks countries and programs from strongest match to weakest — using only real, source-linked data, never guessed numbers. Want to look beyond that? Browse the full global directory too.</p>
+  <div class="stats"><span class="stat" id="countryStat"></span><span class="stat" id="programStat"></span><span class="stat" id="directoryStat"></span><span class="stat">Official links included</span><span class="stat">No fake rankings, no invented prices</span></div>
+</section>
+
+<div class="tabbar">
+  <button class="tabbtn active" id="tabBtnFinder">🎯 Match Finder</button>
+  <button class="tabbtn" id="tabBtnDirectory">🌍 Browse All Universities</button>
+</div>
+
+<div class="tabpanel active" id="tabFinder">
+<section class="finder" id="finder">
+  <div class="finder-head">
+    <div><h2>Build your study profile</h2><p>Your choices stay in this browser and can be changed anytime.</p></div>
+    <div class="steps"><span class="step active" id="step1">1</span><span class="step" id="step2">2</span><span class="step" id="step3">3</span></div>
+  </div>
+  <div class="callout"><b>Honest coverage note:</b> matching only runs against programs UniMatch has actually verified with sources. <span id="coverageText">Loading current coverage…</span> Other majors, degree levels, or regions will return few or no matches until more programs are added. That's on purpose: we'd rather say "no verified match" than invent a tuition number. For everything else, use the Browse tab.</div>
+
+  <form id="profileForm" class="form-grid">
+    <div class="field full"><label>Degree level</label><div class="subjects" id="levelChips"></div></div>
+    <div class="field full"><label for="majorSelect">Major</label><select id="majorSelect"></select><div class="hint" id="subjectHint">Loading current coverage…</div></div>
+    <div class="field"><label for="tuition">Maximum tuition per year (€)</label><input id="tuition" type="number" min="0" step="100" value="4500" required><div class="hint">Use the most you are genuinely able to pay each academic year.</div></div>
+    <div class="field"><label for="living">Maximum living cost per month (€)</label><input id="living" type="number" min="0" step="50" value="900" required><div class="hint">Rent, food, transport, utilities, and basic personal spending.</div></div>
+    <div class="field"><label for="language">Teaching language</label><select id="language"><option value="English">English</option><option value="Any">Any language</option></select></div>
+    <div class="field full"><label>Admission preferences</label><div class="toggles">
+      <label class="toggle"><input id="noExam" type="checkbox" checked><span><b>Avoid written entrance exams</b><span>Interviews and document assessment are still allowed.</span></span></label>
+      <label class="toggle"><input id="strictBudget" type="checkbox"><span><b>Strict budget only</b><span>Hide uncertain prices and programs slightly above budget.</span></span></label>
+    </div></div>
+    <div class="form-actions"><button type="button" class="secondary" id="resetProfile">Reset</button><button class="primary" type="submit">Find matching countries →</button></div>
+  </form>
+
+  <section class="results hidden" id="countryResults">
+    <div class="results-top"><div><h2>Countries matching your profile</h2><p id="resultSummary"></p></div><button class="secondary" id="editProfile">Edit profile</button></div>
+    <div class="summary-strip" id="profileSummary"></div>
+    <div class="country-grid" id="countryGrid"></div>
+  </section>
+
+  <section class="university-view hidden" id="universityView">
+    <button class="secondary back" id="backCountries">← Back to countries</button>
+    <div class="country-head"><div><h2 id="countryTitle"></h2><p id="countrySummary"></p></div><div class="sort-note">Ordered by personal match score, then affordability</div></div>
+    <div class="uni-list" id="universityList"></div>
+  </section>
+</section>
+</div>
+
+<div class="tabpanel" id="tabDirectory">
+<section class="directory">
+  <div class="finder-head">
+    <div><h2>Browse all universities</h2><p>A raw, searchable directory — not scored or ranked, just names and official sites.</p></div>
+  </div>
+  <div class="callout info"><b>What this is:</b> this list comes from an open worldwide university dataset — school name, country, and official website only. It does <b>not</b> include tuition, living costs, majors, or degree levels, so it can't be filtered by budget. Use it to discover schools by country or name, then check tuition and programs directly on each site.</div>
+  <div class="dir-controls">
+    <div class="field"><label for="dirSearch">Search by name</label><input id="dirSearch" placeholder="e.g. Warsaw, Technical, State University…"></div>
+    <div class="field"><label for="dirCountry">Filter by country</label><select id="dirCountry"><option value="">All countries</option></select></div>
+  </div>
+  <div class="dir-meta" id="dirMeta"></div>
+  <div class="dir-grid" id="dirGrid"></div>
+  <div class="dir-pager">
+    <button id="dirPrev">← Prev</button>
+    <span id="dirPageLabel"></span>
+    <button id="dirNext">Next →</button>
+  </div>
+</section>
+</div>
+
+<section class="checklist">
+  <div class="check-head"><div><h2>Universal application checklist</h2><div class="hint">Saved locally in your browser.</div></div><div><div class="progress"><div id="progressFill"></div></div><div class="hint" id="progressText" style="text-align:right;margin-top:5px">0% complete</div></div></div>
+  <div class="check-grid" id="checkGrid"></div>
+</section>
+</div>
+<footer><div class="shell">Match Finder scores are only ever calculated from programs UniMatch has personally verified and source-linked — never estimated. The Browse directory is unscored and unverified beyond name/country/website. University fees, deadlines, admission rules, and visa requirements change constantly. Treat both tools as a discovery starting point, then verify every important detail on the official university page before paying anything. "Best match" means best fit for the profile entered, not an official global university ranking.</div></footer>
+<script src="verified-data.js"></script>
+<script src="universities-directory.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
