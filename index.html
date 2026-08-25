@@ -18,7 +18,20 @@
 </head>
 <body>
 <div class="shell">
-<nav><div class="brand">Uni<span>Match</span></div><div class="nav-right"><div class="nav-note">Budget-based matching for verified programs<br>+ a global directory to browse</div><button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode"><span id="themeIcon">🌙</span><span id="themeLabel">Dark</span></button></div></nav>
+<nav><div class="brand">Uni<span>Match</span></div><div class="nav-right"><div class="nav-note">Budget-based matching for verified programs<br>+ a global directory to browse</div>
+  <div class="settings-wrap">
+    <button class="theme-toggle" id="settingsToggle" type="button" aria-label="Open settings" aria-expanded="false"><span>⚙️</span><span>Settings</span></button>
+    <div class="settings-panel hidden" id="settingsPanel">
+      <div class="settings-title">Theme</div>
+      <div class="theme-options">
+        <button type="button" class="theme-option" data-theme-choice="light"><span class="theme-swatch swatch-light"></span>Light</button>
+        <button type="button" class="theme-option" data-theme-choice="dark"><span class="theme-swatch swatch-dark"></span>Dark</button>
+        <button type="button" class="theme-option" data-theme-choice="ocean"><span class="theme-swatch swatch-ocean"></span>Ocean</button>
+        <button type="button" class="theme-option" data-theme-choice="forest"><span class="theme-swatch swatch-forest"></span>Forest</button>
+      </div>
+    </div>
+  </div>
+</div></nav>
 <section class="hero">
   <span class="eyebrow">🎓 Free & open university search</span>
   <h1>Find a university that fits your real budget.</h1>
@@ -41,7 +54,8 @@
 
   <form id="profileForm" class="form-grid">
     <div class="field full"><label>Degree level</label><div class="subjects" id="levelChips"></div></div>
-    <div class="field full"><label for="majorSelect">Major</label><select id="majorSelect"></select><div class="hint" id="subjectHint">Loading current coverage…</div></div>
+    <div class="field full"><label for="fieldSelect">Field</label><select id="fieldSelect"></select><div class="hint">Choose a broad field first, then optionally narrow to a specific major below.</div></div>
+    <div class="field full"><label for="majorSelect">Major (optional)</label><select id="majorSelect"></select><div class="hint" id="subjectHint">Loading current coverage…</div></div>
     <div class="field"><label for="tuition">Maximum tuition per year (€)</label><input id="tuition" type="number" min="0" step="100" value="4500" required><div class="hint">Use the most you are genuinely able to pay each academic year.</div></div>
     <div class="field"><label for="living">Maximum living cost per month (€)</label><input id="living" type="number" min="0" step="50" value="900" required><div class="hint">Rent, food, transport, utilities, and basic personal spending.</div></div>
     <div class="field"><label for="language">Teaching language</label><select id="language"><option value="English">English</option><option value="Any">Any language</option></select></div>
