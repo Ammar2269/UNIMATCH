@@ -12,8 +12,18 @@ const SUBJECT_SYNONYMS = {
   'Artificial Intelligence':['artificial intelligence',' ai ','ai /','ai engineering','machine learning'],
   'Machine Learning':['machine learning','artificial intelligence',' ai ','data science'],
   'Cybersecurity':['cybersecurity','cyber security','information security','network security','technology security'],
-  'Computer Science':['computer science','computer engineering','computing','software engineering'],
-  'Data Science':['data science','big data','analytics'],
+  'Computer Science':['computer science','computing'],
+  'Computer Engineering':['computer engineering'],
+  'Software Engineering':['software engineering'],
+  'Software Development':['software development'],
+  'Data Science':['data science','big data'],
+  'Data Analytics':['data analytics'],
+  'Data Engineering':['data engineering'],
+  'Information Systems':['information systems'],
+  'Information Technology':['information technology'],
+  'Business Analytics':['business analytics'],
+  'Robotics':['robotics'],
+  'Bioinformatics':['bioinformatics'],
   'Business Administration':['business administration','business management','bba','mba','business studies'],
   'Finance':['finance','financial management','banking'],
   'Accounting':['accounting','accountancy'],
@@ -71,22 +81,46 @@ const SUBJECT_SYNONYMS = {
   'Curatorial Studies':['curatorial studies','curatorial practice']
 };
 
+// Broad field groupings, purely for the two-step Field -> Major picker. Add any
+// new major from SUBJECT_SYNONYMS to exactly one group here or it won't appear
+// in the Major dropdown.
+const FIELD_CATEGORIES = {
+  'Business & Economics': ['Business Administration','Finance','Accounting','Marketing','Economics','Business Analytics','Hospitality / Tourism'],
+  'Computing & Technology': ['Artificial Intelligence','Machine Learning','Cybersecurity','Computer Science','Computer Engineering','Software Engineering','Software Development','Data Science','Data Analytics','Data Engineering','Information Systems','Information Technology','Robotics','Bioinformatics'],
+  'Engineering': ['Mechanical Engineering','Civil Engineering','Electrical Engineering','Chemical Engineering'],
+  'Health & Medicine': ['Medicine','Nursing','Pharmacy','Dentistry'],
+  'Law & Social Sciences': ['Law','Psychology','International Relations','Sociology'],
+  'Sciences & Mathematics': ['Physics','Chemistry','Biology','Mathematics','Environmental Science','Agriculture'],
+  'Arts & Design': ['Architecture','Fine Arts','Painting','Drawing','Sculpture','Ceramics','Printmaking','Photography','Graphic Design','Fashion Design','Interior Design','Industrial Design','Product Design','Illustration','Textile Design','Package Design','Animation','Game Design','Interactive Media','Film Production','Television Production','Video Media Studies','Digital Arts','Art History','Art Therapy','Art Education','Arts Management','Curatorial Studies'],
+  'Media & Communication': ['Journalism / Media'],
+  'Education': ['Education'],
+};
+const FIELD_NAMES = Object.keys(FIELD_CATEGORIES);
+const ANY_MAJOR = ''; // sentinel: "all majors within the chosen field"
+
 // How many verified, sourced programs exist right now for a given major key.
 // Used to annotate the major dropdown so people can see what's actually covered
 // vs. what's still empty — the dropdown lists every major either way.
 function countProgramsForMajor(key){
-  const syns = SUBJECT_SYNONYMS[key];
-  if (!syns) return 0;
-  const allPrograms = Object.values(DATA.programs).flat();
-  return allPrograms.filter(p => {
-    const hay = text([p.program, p.field].join(' '));
-    return syns.some(w => hay.includes(w.trim()));
+  const syns=SUBJECT_SYNONYMS[key];
+  const allPrograms=Object.values(DATA.programs).flat();
+  return allPrograms.filter(p=>{
+    const hay=text([p.program,p.field].join(' '));
+    return syns.some(w=>hay.includes(w.trim()));
+  }).length;
+}
+function countProgramsForField(fieldName){
+  const majors=FIELD_CATEGORIES[fieldName]||[];
+  const allPrograms=Object.values(DATA.programs).flat();
+  return allPrograms.filter(p=>{
+    const hay=text([p.program,p.field].join(' '));
+    return majors.some(m=>SUBJECT_SYNONYMS[m].some(w=>hay.includes(w.trim())));
   }).length;
 }
 const ALL_MAJORS=Object.keys(SUBJECT_SYNONYMS).sort((a,b)=>a.localeCompare(b));
 const SUBJECTS=ALL_MAJORS.filter(m=>countProgramsForMajor(m)>0); // kept for the coverage summary line
 const LEVELS=[{value:'bachelor',label:"Bachelor's"},{value:'master',label:"Master's"},{value:'phd',label:'PhD / Doctorate'}];
-const state = {subject:ALL_MAJORS[0]||'', level:'bachelor', profile:null, matches:[]};
+const state = {field:FIELD_NAMES[0], subject:ANY_MAJOR, level:'bachelor', profile:null, matches:[]};
 
 /* ---------------- Match Finder (verified data only) ---------------- */
 
@@ -118,13 +152,18 @@ function inferLevel(p){
   if(/master|msc|m\.sc|ma\b/.test(s))return 'master';
   return 'bachelor';
 }
-function subjectMatch(p,subject){
+function subjectMatch(p,subject,fieldName){
   // Deliberately excludes free-text "notes" from matching: notes often mention
   // unrelated words in passing (e.g. "finance is the issue, not the program"),
   // which causes false-positive subject matches. program + field stay on-topic.
   const hay=text([p.program,p.field].join(' '));
   const q=text(subject).trim();
-  if(!q)return 1;
+  if(!q){
+    // No specific major chosen: match against ANY major within the selected field.
+    const majors=FIELD_CATEGORIES[fieldName]||[];
+    if(!majors.length)return 1;
+    return majors.some(m=>SUBJECT_SYNONYMS[m].some(w=>hay.includes(text(w).trim())))?1:0;
+  }
   const canonicalKey=Object.keys(SUBJECT_SYNONYMS).find(k=>text(k)===q);
   const words=canonicalKey?SUBJECT_SYNONYMS[canonicalKey]:q.split(/\s+/).filter(w=>w.length>2);
   if(!words.length)return 0;
@@ -148,7 +187,7 @@ function evaluateProgram(p,country,profile){
   const tuition=parseRange(p.tuition), living=parseRange(p.living||country.living);
   const tStatus=priceStatus(tuition,profile.tuition,profile.strict);
   const lStatus=priceStatus(living,profile.living,profile.strict);
-  const field=subjectMatch(p,profile.subject);
+  const field=subjectMatch(p,profile.subject,profile.field);
   const level=inferLevel(p)===profile.level;
   const language=profile.language==='Any'||text(p.language).includes(text(profile.language));
   let score=100;
@@ -185,20 +224,34 @@ function buildCountryMatches(profile){
   }).sort((a,b)=>b.score-a.score || b.exact-a.exact || a.name.localeCompare(b.name));
 }
 function profileFromForm(){
-  return {tuition:Number(document.getElementById('tuition').value),living:Number(document.getElementById('living').value),level:state.level,language:document.getElementById('language').value,subject:state.subject,noExam:document.getElementById('noExam').checked,strict:document.getElementById('strictBudget').checked};
+  return {tuition:Number(document.getElementById('tuition').value),living:Number(document.getElementById('living').value),level:state.level,language:document.getElementById('language').value,subject:state.subject,field:state.field,noExam:document.getElementById('noExam').checked,strict:document.getElementById('strictBudget').checked};
 }
 function renderLevelChips(){
   const el=document.getElementById('levelChips');
   el.innerHTML=LEVELS.map(l=>`<button type="button" class="chip ${l.value===state.level?'selected':''}" data-level="${l.value}">${l.label}</button>`).join('');
   el.querySelectorAll('.chip').forEach(btn=>btn.onclick=()=>{state.level=btn.dataset.level;renderLevelChips();});
 }
+function renderFieldSelect(){
+  const el=document.getElementById('fieldSelect');
+  el.innerHTML=FIELD_NAMES.map(f=>{
+    const count=countProgramsForField(f);
+    const label=count?`${f} (${count} verified program${count===1?'':'s'})`:`${f} (no verified programs yet)`;
+    return `<option value="${f.replace(/"/g,'&quot;')}" ${f===state.field?'selected':''}>${label}</option>`;
+  }).join('');
+  el.onchange=()=>{state.field=el.value;state.subject=ANY_MAJOR;renderMajorSelect();};
+}
 function renderMajorSelect(){
   const el=document.getElementById('majorSelect');
-  el.innerHTML=ALL_MAJORS.map(m=>{
+  const majorsInField=FIELD_CATEGORIES[state.field]||[];
+  const anyCount=countProgramsForField(state.field);
+  const anyLabel=anyCount?`All majors in ${state.field} (${anyCount} verified programs)`:`All majors in ${state.field} (no verified programs yet)`;
+  const options=[`<option value="" ${state.subject===ANY_MAJOR?'selected':''}>${anyLabel}</option>`];
+  majorsInField.forEach(m=>{
     const count=countProgramsForMajor(m);
     const label=count?`${m} (${count} verified program${count===1?'':'s'})`:`${m} (no verified programs yet)`;
-    return `<option value="${m.replace(/"/g,'&quot;')}" ${m===state.subject?'selected':''}>${label}</option>`;
-  }).join('');
+    options.push(`<option value="${m.replace(/"/g,'&quot;')}" ${m===state.subject?'selected':''}>${label}</option>`);
+  });
+  el.innerHTML=options.join('');
   el.onchange=()=>{state.subject=el.value;};
 }
 function renderCountryResults(){
@@ -238,7 +291,7 @@ function renderChecklist(){
   grid.querySelectorAll('input').forEach(box=>box.onchange=()=>{const s=JSON.parse(localStorage.getItem('unimatchChecklist')||'{}');s[box.dataset.id]=box.checked;localStorage.setItem('unimatchChecklist',JSON.stringify(s));box.closest('.checkitem').classList.toggle('done',box.checked);updateProgress();});updateProgress();
 }
 function updateProgress(){const boxes=[...document.querySelectorAll('#checkGrid input')],done=boxes.filter(x=>x.checked).length,pct=boxes.length?Math.round(done/boxes.length*100):0;document.getElementById('progressFill').style.width=pct+'%';document.getElementById('progressText').textContent=`${pct}% complete (${done}/${boxes.length})`;}
-function resetForm(){document.getElementById('profileForm').reset();document.getElementById('tuition').value=4500;document.getElementById('living').value=900;document.getElementById('noExam').checked=true;state.subject=ALL_MAJORS[0]||'';state.level='bachelor';renderLevelChips();renderMajorSelect();}
+function resetForm(){document.getElementById('profileForm').reset();document.getElementById('tuition').value=4500;document.getElementById('living').value=900;document.getElementById('noExam').checked=true;state.field=FIELD_NAMES[0];state.subject=ANY_MAJOR;state.level='bachelor';renderFieldSelect();renderLevelChips();renderMajorSelect();}
 
 document.getElementById('profileForm').addEventListener('submit',e=>{e.preventDefault();state.profile=profileFromForm();state.matches=buildCountryMatches(state.profile);localStorage.setItem('unimatchProfile',JSON.stringify(state.profile));renderCountryResults();});
 document.getElementById('editProfile').onclick=()=>{document.getElementById('countryResults').classList.add('hidden');document.getElementById('profileForm').classList.remove('hidden');document.getElementById('step1').classList.add('active');document.getElementById('step2').classList.remove('active');};
@@ -247,7 +300,7 @@ document.getElementById('resetProfile').onclick=resetForm;
 document.getElementById('countryStat').textContent=`${DATA.countries.length} countries in verified database`;
 document.getElementById('programStat').textContent=`${Object.values(DATA.programs).flat().length} verified program cards`;
 document.getElementById('directoryStat').textContent=`${DIRECTORY.length.toLocaleString()} universities to browse`;
-renderLevelChips();renderMajorSelect();renderChecklist();renderCoverageSummary();
+renderFieldSelect();renderLevelChips();renderMajorSelect();renderChecklist();renderCoverageSummary();
 
 function renderCoverageSummary(){
   const allPrograms=Object.values(DATA.programs).flat();
@@ -319,21 +372,41 @@ function renderDirectoryPage(){
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function escapeAttr(s){return escapeHtml(s);}
 
-/* ---------------- Theme toggle (dark mode, peach accent stays constant) ---------------- */
+/* ---------------- Settings panel: theme picker (Light / Dark / Ocean / Forest) ---------------- */
 
-function applyThemeUI(theme){
-  const icon=document.getElementById('themeIcon'), label=document.getElementById('themeLabel');
-  if(icon)icon.textContent=theme==='dark'?'☀️':'🌙';
-  if(label)label.textContent=theme==='dark'?'Light':'Dark';
+const THEMES=[
+  {value:'light',label:'Light'},
+  {value:'dark',label:'Dark'},
+  {value:'ocean',label:'Ocean'},
+  {value:'forest',label:'Forest'}
+];
+function applySettingsUI(theme){
+  document.querySelectorAll('.theme-option').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.themeChoice===theme);
+  });
 }
-const themeToggleBtn=document.getElementById('themeToggle');
-applyThemeUI(document.documentElement.getAttribute('data-theme')||'light');
-if(themeToggleBtn){
-  themeToggleBtn.onclick=()=>{
-    const current=document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';
-    const next=current==='dark'?'light':'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    try{localStorage.setItem('unimatchTheme', next);}catch(e){}
-    applyThemeUI(next);
+const settingsToggleBtn=document.getElementById('settingsToggle');
+const settingsPanel=document.getElementById('settingsPanel');
+applySettingsUI(document.documentElement.getAttribute('data-theme')||'light');
+if(settingsToggleBtn && settingsPanel){
+  settingsToggleBtn.onclick=(e)=>{
+    e.stopPropagation();
+    const isHidden=settingsPanel.classList.contains('hidden');
+    settingsPanel.classList.toggle('hidden');
+    settingsToggleBtn.setAttribute('aria-expanded', isHidden?'true':'false');
   };
+  document.querySelectorAll('.theme-option').forEach(btn=>{
+    btn.onclick=()=>{
+      const theme=btn.dataset.themeChoice;
+      document.documentElement.setAttribute('data-theme', theme);
+      try{localStorage.setItem('unimatchTheme', theme);}catch(e){}
+      applySettingsUI(theme);
+    };
+  });
+  document.addEventListener('click',(e)=>{
+    if(!settingsPanel.contains(e.target) && e.target!==settingsToggleBtn && !settingsToggleBtn.contains(e.target)){
+      settingsPanel.classList.add('hidden');
+      settingsToggleBtn.setAttribute('aria-expanded','false');
+    }
+  });
 }
