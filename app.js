@@ -296,6 +296,11 @@ function resetForm(){document.getElementById('profileForm').reset();document.get
 document.getElementById('profileForm').addEventListener('submit',e=>{e.preventDefault();state.profile=profileFromForm();state.matches=buildCountryMatches(state.profile);localStorage.setItem('unimatchProfile',JSON.stringify(state.profile));renderCountryResults();});
 document.getElementById('editProfile').onclick=()=>{document.getElementById('countryResults').classList.add('hidden');document.getElementById('profileForm').classList.remove('hidden');document.getElementById('step1').classList.add('active');document.getElementById('step2').classList.remove('active');};
 document.getElementById('backCountries').onclick=renderCountryResults;
+const backToTopBtn=document.getElementById('backToTop');
+if(backToTopBtn){
+  backToTopBtn.onclick=()=>{window.scrollTo({top:0,behavior:'smooth'});};
+  window.addEventListener('scroll',()=>{backToTopBtn.classList.toggle('visible',window.scrollY>420);},{passive:true});
+}
 document.getElementById('resetProfile').onclick=resetForm;
 document.getElementById('countryStat').textContent=`${DATA.countries.length} countries in verified database`;
 document.getElementById('programStat').textContent=`${Object.values(DATA.programs).flat().length} verified program cards`;
