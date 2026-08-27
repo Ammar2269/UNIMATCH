@@ -14,6 +14,8 @@
   }catch(e){}
 })();
 </script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -33,9 +35,9 @@
   </div>
 </div></nav>
 <section class="hero">
-  <span class="eyebrow">🎓 Free & open university search</span>
+  <span class="eyebrow">It's not that complicated</span>
   <h1>Find a university that fits your real budget.</h1>
-  <p>Enter what you can spend, what you want to study, and your degree level. UniMatch ranks countries and programs from strongest match to weakest — using only real, source-linked data, never guessed numbers. Want to look beyond that? Browse the full global directory too.</p>
+  <p>It's simple, transparent, and powered by real data.</p>
   <div class="stats"><span class="stat" id="countryStat"></span><span class="stat" id="programStat"></span><span class="stat" id="directoryStat"></span><span class="stat">Official links included</span><span class="stat">No fake rankings, no invented prices</span></div>
 </section>
 
@@ -50,8 +52,6 @@
     <div><h2>Build your study profile</h2><p>Your choices stay in this browser and can be changed anytime.</p></div>
     <div class="steps"><span class="step active" id="step1">1</span><span class="step" id="step2">2</span><span class="step" id="step3">3</span></div>
   </div>
-  <div class="callout"><b>Honest coverage note:</b> matching only runs against programs UniMatch has actually verified with sources. <span id="coverageText">Loading current coverage…</span> Other majors, degree levels, or regions will return few or no matches until more programs are added. That's on purpose: we'd rather say "no verified match" than invent a tuition number. For everything else, use the Browse tab.</div>
-
   <form id="profileForm" class="form-grid">
     <div class="field full"><label>Degree level</label><div class="subjects" id="levelChips"></div></div>
     <div class="field full"><label for="fieldSelect">Field</label><select id="fieldSelect"></select><div class="hint">Choose a broad field first, then optionally narrow to a specific major below.</div></div>
@@ -106,6 +106,7 @@
 </section>
 </div>
 <footer><div class="shell">Match Finder scores are only ever calculated from programs UniMatch has personally verified and source-linked — never estimated. The Browse directory is unscored and unverified beyond name/country/website. University fees, deadlines, admission rules, and visa requirements change constantly. Treat both tools as a discovery starting point, then verify every important detail on the official university page before paying anything. "Best match" means best fit for the profile entered, not an official global university ranking.</div></footer>
+<button id="backToTop" class="back-to-top" type="button" aria-label="Back to top">↑</button>
 <script src="verified-data.js"></script>
 <script src="universities-directory.js"></script>
 <script src="app.js"></script>
