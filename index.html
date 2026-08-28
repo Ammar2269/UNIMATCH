@@ -21,14 +21,14 @@
 </head>
 <body>
 <div class="top-banner" id="topBanner">
-  <span id="topBannerText">🎓 Loading current coverage…</span>
+  <span id="topBannerText">✦ Loading current coverage…</span>
   <button type="button" id="topBannerClose" aria-label="Dismiss banner">✕</button>
 </div>
 <button type="button" id="backToTop" class="back-to-top hidden" aria-label="Back to top">↑</button>
 <div class="shell">
 <nav><div class="brand">Uni<span>Match</span></div><div class="nav-right"><div class="nav-note">Budget-based matching for verified programs<br>+ a global directory to browse</div>
   <div class="settings-wrap">
-    <button class="theme-toggle" id="settingsToggle" type="button" aria-label="Open settings" aria-expanded="false"><span>⚙️</span><span>Settings</span></button>
+    <button class="theme-toggle" id="settingsToggle" type="button" aria-label="Open settings" aria-expanded="false"><span aria-hidden="true">⚙</span><span>Settings</span></button>
     <div class="settings-panel hidden" id="settingsPanel">
       <div class="settings-title">Theme</div>
       <div class="theme-options">
@@ -39,16 +39,16 @@
   </div>
 </div></nav>
 <section class="hero">
-  <span class="eyebrow">🎓 Free & open university search</span>
+  <span class="eyebrow">✦ Free & open university search</span>
   <h1>Find a university that fits your real budget.</h1>
   <p>Enter what you can spend, what you want to study, and your degree level. UniMatch ranks countries and programs from strongest match to weakest — using only real, source-linked data, never guessed numbers. Want to look beyond that? Browse the full global directory too.</p>
   <div class="stats"><span class="stat" id="countryStat"></span><span class="stat" id="programStat"></span><span class="stat" id="directoryStat"></span><span class="stat">Official links included</span><span class="stat">No fake rankings, no invented prices</span></div>
 </section>
 
 <div class="tabbar">
-  <button class="tabbtn active" id="tabBtnFinder">🎯 Match Finder</button>
-  <button class="tabbtn" id="tabBtnDirectory">🌍 Browse All Universities</button>
-  <button class="tabbtn" id="tabBtnWishlist">❤ Wishlist<span class="wishlist-count" id="wishlistCount"></span></button>
+  <button class="tabbtn active" id="tabBtnFinder">Match Finder</button>
+  <button class="tabbtn" id="tabBtnDirectory">Browse All Universities</button>
+  <button class="tabbtn" id="tabBtnWishlist">♡ Wishlist<span class="wishlist-count" id="wishlistCount"></span></button>
 </div>
 
 <div class="tabpanel active" id="tabFinder">
@@ -122,6 +122,7 @@
   <div class="check-head"><div><h2>Universal application checklist</h2><div class="hint">Saved locally in your browser.</div></div><div><div class="progress"><div id="progressFill"></div></div><div class="hint" id="progressText" style="text-align:right;margin-top:5px">0% complete</div></div></div>
   <div class="check-grid" id="checkGrid"></div>
 </section>
+<div class="ornament" aria-hidden="true"><span></span><em>&#10087;</em><span></span></div>
 </div>
 <footer><div class="shell">Match Finder scores are only ever calculated from programs UniMatch has personally verified and source-linked — never estimated. The Browse directory is unscored and unverified beyond name/country/website. University fees, deadlines, admission rules, and visa requirements change constantly. Treat both tools as a discovery starting point, then verify every important detail on the official university page before paying anything. "Best match" means best fit for the profile entered, not an official global university ranking.</div></footer>
 <script src="verified-data.js"></script>

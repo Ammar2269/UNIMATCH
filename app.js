@@ -445,7 +445,7 @@ updateWishlistCount();
   const totalPrograms=Object.values(DATA.programs).flat().length;
   const totalCountries=DATA.countries.filter(c=>(DATA.programs[c.name]||[]).length).length;
   const textEl=document.getElementById('topBannerText');
-  if(textEl)textEl.innerHTML=`🎓 <b>${totalPrograms.toLocaleString()}</b> verified programs across <b>${totalCountries}</b> countries — real tuition, real sources, never guessed. Browse ${DIRECTORY.length.toLocaleString()} more in the directory.`;
+  if(textEl)textEl.innerHTML=`✦ <b>${totalPrograms.toLocaleString()}</b> verified programs across <b>${totalCountries}</b> countries — real tuition, real sources, never guessed. Browse ${DIRECTORY.length.toLocaleString()} more in the directory.`;
   const closeBtn=document.getElementById('topBannerClose');
   if(closeBtn)closeBtn.onclick=()=>{banner.classList.add('hidden'); try{localStorage.setItem('unimatchBannerDismissed','1');}catch(e){}};
 })();
@@ -483,11 +483,27 @@ if(settingsToggleBtn && settingsPanel){
     settingsToggleBtn.setAttribute('aria-expanded', isHidden?'true':'false');
   };
   document.querySelectorAll('.theme-option').forEach(btn=>{
-    btn.onclick=()=>{
+    btn.onclick=(e)=>{
       const theme=btn.dataset.themeChoice;
-      document.documentElement.setAttribute('data-theme', theme);
-      try{localStorage.setItem('unimatchTheme', theme);}catch(e){}
-      applySettingsUI(theme);
+      const apply=()=>{
+        document.documentElement.setAttribute('data-theme', theme);
+        try{localStorage.setItem('unimatchTheme', theme);}catch(err){}
+        applySettingsUI(theme);
+      };
+      if(document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        const r=e.currentTarget.getBoundingClientRect();
+        const x=r.left+r.width/2, y=r.top+r.height/2;
+        const endRadius=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
+        const vt=document.startViewTransition(apply);
+        vt.ready.then(()=>{
+          document.documentElement.animate(
+            {clipPath:[`circle(0px at ${x}px ${y}px)`,`circle(${endRadius}px at ${x}px ${y}px)`]},
+            {duration:700,easing:'cubic-bezier(.4,0,.2,1)',pseudoElement:'::view-transition-new(root)'}
+          );
+        });
+      } else {
+        apply();
+      }
     };
   });
   document.addEventListener('click',(e)=>{
