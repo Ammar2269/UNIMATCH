@@ -280,8 +280,14 @@ function showCountry(name){
   const list=document.getElementById('universityList');
   list.innerHTML=match.programs.map((p,i)=>{
     const cls=fieldBadge(p.score); const strongest=p.reasons.filter(r=>!r.includes('Different')&&!r.includes('above')&&!r.includes('conflicts')).slice(0,3).join(' · ');
-    return `<article class="uni-card"><div class="uni-top"><div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px"><span class="badge ${cls}">${p.score}% match</span><span class="badge">${p.level}</span></div><h3>${p.university}</h3><div class="program-name">${p.program}</div></div><span class="uni-rank">#${i+1} best fit</span></div><div class="reason"><b>Why it ranks here:</b> ${strongest||p.reasons.slice(0,3).join(' · ')}.</div><div class="meta-grid"><div class="meta"><b>City</b><span>${p.city}</span></div><div class="meta"><b>Field</b><span>${p.field}</span></div><div class="meta"><b>Language</b><span>${p.language}</span></div><div class="meta"><b>Tuition</b><span>${p.tuition}</span></div><div class="meta"><b>Living cost</b><span>${p.living}</span></div><div class="meta"><b>Deadline</b><span>${p.deadline}</span></div><div class="meta"><b>Admission / exam</b><span>${p.exam}</span></div><div class="meta"><b>Original fit note</b><span>${p.fit}</span></div></div><div class="notes">${p.notes}</div><div class="links">${(p.sources||[]).map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]} ↗</a>`).join('')}</div></article>`;
+    return `<article class="uni-card"><div class="uni-top"><div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px"><span class="badge ${cls}">${p.score}% match</span><span class="badge">${p.level}</span></div><h3>${p.university}</h3><div class="program-name">${p.program}</div></div><div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end"><span class="uni-rank">#${i+1} best fit</span><button type="button" class="wish-btn" data-wish-idx="${i}">♡ Save</button></div></div><div class="reason"><b>Why it ranks here:</b> ${strongest||p.reasons.slice(0,3).join(' · ')}.</div><div class="meta-grid"><div class="meta"><b>City</b><span>${p.city}</span></div><div class="meta"><b>Field</b><span>${p.field}</span></div><div class="meta"><b>Language</b><span>${p.language}</span></div><div class="meta"><b>Tuition</b><span>${p.tuition}</span></div><div class="meta"><b>Living cost</b><span>${p.living}</span></div><div class="meta"><b>Deadline</b><span>${p.deadline}</span></div><div class="meta"><b>Admission / exam</b><span>${p.exam}</span></div><div class="meta"><b>Original fit note</b><span>${p.fit}</span></div></div><div class="notes">${p.notes}</div><div class="links">${(p.sources||[]).map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]} ↗</a>`).join('')}</div></article>`;
   }).join('');
+  list.querySelectorAll('[data-wish-idx]').forEach(btn=>{
+    const p=match.programs[Number(btn.dataset.wishIdx)];
+    const item={type:'program',country:match.name,flag:match.flag,university:p.university,program:p.program,field:p.field,city:p.city,tuition:p.tuition,language:p.language,level:p.level,sources:p.sources||[]};
+    setWishBtnState(btn,isProgramSaved(item));
+    btn.onclick=()=>{const saved=toggleProgramWishlist(item);setWishBtnState(btn,saved);renderWishlistTab();};
+  });
   document.getElementById('universityView').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderChecklist(){
@@ -296,11 +302,6 @@ function resetForm(){document.getElementById('profileForm').reset();document.get
 document.getElementById('profileForm').addEventListener('submit',e=>{e.preventDefault();state.profile=profileFromForm();state.matches=buildCountryMatches(state.profile);localStorage.setItem('unimatchProfile',JSON.stringify(state.profile));renderCountryResults();});
 document.getElementById('editProfile').onclick=()=>{document.getElementById('countryResults').classList.add('hidden');document.getElementById('profileForm').classList.remove('hidden');document.getElementById('step1').classList.add('active');document.getElementById('step2').classList.remove('active');};
 document.getElementById('backCountries').onclick=renderCountryResults;
-const backToTopBtn=document.getElementById('backToTop');
-if(backToTopBtn){
-  backToTopBtn.onclick=()=>{window.scrollTo({top:0,behavior:'smooth'});};
-  window.addEventListener('scroll',()=>{backToTopBtn.classList.toggle('visible',window.scrollY>420);},{passive:true});
-}
 document.getElementById('resetProfile').onclick=resetForm;
 document.getElementById('countryStat').textContent=`${DATA.countries.length} countries in verified database`;
 document.getElementById('programStat').textContent=`${Object.values(DATA.programs).flat().length} verified program cards`;
@@ -322,10 +323,16 @@ function renderCoverageSummary(){
 
 /* ---------------- Tab switching ---------------- */
 
-const tabBtnFinder=document.getElementById('tabBtnFinder'), tabBtnDirectory=document.getElementById('tabBtnDirectory');
-const tabFinder=document.getElementById('tabFinder'), tabDirectory=document.getElementById('tabDirectory');
-tabBtnFinder.onclick=()=>{tabBtnFinder.classList.add('active');tabBtnDirectory.classList.remove('active');tabFinder.classList.add('active');tabDirectory.classList.remove('active');};
-tabBtnDirectory.onclick=()=>{tabBtnDirectory.classList.add('active');tabBtnFinder.classList.remove('active');tabDirectory.classList.add('active');tabFinder.classList.remove('active');initDirectoryOnce();};
+const tabBtnFinder=document.getElementById('tabBtnFinder'), tabBtnDirectory=document.getElementById('tabBtnDirectory'), tabBtnWishlist=document.getElementById('tabBtnWishlist');
+const tabFinder=document.getElementById('tabFinder'), tabDirectory=document.getElementById('tabDirectory'), tabWishlist=document.getElementById('tabWishlist');
+function activateTab(btn,panel){
+  [tabBtnFinder,tabBtnDirectory,tabBtnWishlist].forEach(b=>b&&b.classList.remove('active'));
+  [tabFinder,tabDirectory,tabWishlist].forEach(p=>p&&p.classList.remove('active'));
+  btn.classList.add('active'); panel.classList.add('active');
+}
+tabBtnFinder.onclick=()=>activateTab(tabBtnFinder,tabFinder);
+tabBtnDirectory.onclick=()=>{activateTab(tabBtnDirectory,tabDirectory);initDirectoryOnce();};
+if(tabBtnWishlist&&tabWishlist)tabBtnWishlist.onclick=()=>{activateTab(tabBtnWishlist,tabWishlist);renderWishlistTab();};
 
 /* ---------------- Browse directory (raw CSV data, unscored) ---------------- */
 
@@ -369,7 +376,13 @@ function renderDirectoryPage(){
   const slice=filtered.slice(start,start+pageSize);
   document.getElementById('dirMeta').textContent=total?`Showing ${start+1}–${Math.min(start+pageSize,total)} of ${total.toLocaleString()} universities`:'No universities match that search.';
   const grid=document.getElementById('dirGrid');
-  grid.innerHTML=slice.map(([country,name,url])=>`<div class="dir-card"><span class="country-tag">${country}</span><h4>${escapeHtml(name)}</h4>${url?`<a href="${escapeAttr(url)}" target="_blank" rel="noopener">Official site ↗</a>`:'<span class="hint">No website listed</span>'}</div>`).join('');
+  grid.innerHTML=slice.map(([country,name,url],i)=>`<div class="dir-card"><span class="country-tag">${country}</span><h4>${escapeHtml(name)}</h4><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px">${url?`<a href="${escapeAttr(url)}" target="_blank" rel="noopener">Official site ↗</a>`:'<span class="hint">No website listed</span>'}<button type="button" class="wish-btn" data-dir-wish-idx="${i}">♡</button></div></div>`).join('');
+  grid.querySelectorAll('[data-dir-wish-idx]').forEach(btn=>{
+    const [country,name,url]=slice[Number(btn.dataset.dirWishIdx)];
+    const item={type:'university',country,name,url};
+    setWishBtnState(btn,isUniSaved(item));
+    btn.onclick=()=>{const saved=toggleUniWishlist(item);setWishBtnState(btn,saved);renderWishlistTab();};
+  });
   document.getElementById('dirPageLabel').textContent=`Page ${clampedPage+1} of ${pages}`;
   document.getElementById('dirPrev').disabled=clampedPage<=0;
   document.getElementById('dirNext').disabled=clampedPage>=pages-1;
@@ -377,13 +390,82 @@ function renderDirectoryPage(){
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function escapeAttr(s){return escapeHtml(s);}
 
-/* ---------------- Settings panel: theme picker (Light / Dark / Ocean / Forest) ---------------- */
+/* ---------------- Wishlist (saved programs & universities, localStorage only) ---------------- */
+
+function getWishlist(){
+  try{ const w=JSON.parse(localStorage.getItem('unimatchWishlist')||'{}'); return {programs:w.programs||[], universities:w.universities||[]}; }
+  catch(e){ return {programs:[],universities:[]}; }
+}
+function saveWishlistData(w){ try{ localStorage.setItem('unimatchWishlist', JSON.stringify(w)); }catch(e){} }
+function programKey(p){ return `${p.country}||${p.university}||${p.program}`; }
+function uniKey(u){ return `${u.country}||${u.name}`; }
+function isProgramSaved(p){ return getWishlist().programs.some(x=>programKey(x)===programKey(p)); }
+function isUniSaved(u){ return getWishlist().universities.some(x=>uniKey(x)===uniKey(u)); }
+function toggleProgramWishlist(p){
+  const w=getWishlist(); const key=programKey(p);
+  const idx=w.programs.findIndex(x=>programKey(x)===key);
+  if(idx>=0)w.programs.splice(idx,1); else w.programs.push(p);
+  saveWishlistData(w); updateWishlistCount();
+  return idx<0;
+}
+function toggleUniWishlist(u){
+  const w=getWishlist(); const key=uniKey(u);
+  const idx=w.universities.findIndex(x=>uniKey(x)===key);
+  if(idx>=0)w.universities.splice(idx,1); else w.universities.push(u);
+  saveWishlistData(w); updateWishlistCount();
+  return idx<0;
+}
+function setWishBtnState(btn,saved){
+  btn.classList.toggle('saved',saved);
+  btn.textContent = btn.hasAttribute('data-wish-idx') ? (saved?'♥ Saved':'♡ Save') : (saved?'♥':'♡');
+}
+function updateWishlistCount(){
+  const w=getWishlist(); const total=w.programs.length+w.universities.length;
+  const badge=document.getElementById('wishlistCount');
+  if(badge) badge.textContent = total? ` (${total})` : '';
+}
+function renderWishlistTab(){
+  const w=getWishlist();
+  const progEl=document.getElementById('wishlistPrograms'), uniEl=document.getElementById('wishlistUniversities'), emptyEl=document.getElementById('wishlistEmpty');
+  if(!progEl||!uniEl||!emptyEl)return;
+  emptyEl.classList.toggle('hidden', w.programs.length>0 || w.universities.length>0);
+  progEl.innerHTML=w.programs.map((p,i)=>`<article class="uni-card"><div class="uni-top"><div><span class="badge">${p.level||''}</span><h3 style="margin-top:8px">${p.university}</h3><div class="program-name">${p.program}</div></div><button type="button" class="wish-btn saved" data-remove-program="${i}">♥ Remove</button></div><div class="meta-grid"><div class="meta"><b>Country</b><span>${p.flag||''} ${p.country}</span></div><div class="meta"><b>City</b><span>${p.city||'—'}</span></div><div class="meta"><b>Field</b><span>${p.field||'—'}</span></div><div class="meta"><b>Language</b><span>${p.language||'—'}</span></div><div class="meta"><b>Tuition</b><span>${p.tuition||'—'}</span></div></div>${(p.sources&&p.sources.length)?`<div class="links">${p.sources.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]} ↗</a>`).join('')}</div>`:''}</article>`).join('');
+  uniEl.innerHTML=w.universities.map((u,i)=>`<div class="dir-card"><span class="country-tag">${u.country}</span><h4>${escapeHtml(u.name)}</h4><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px">${u.url?`<a href="${escapeAttr(u.url)}" target="_blank" rel="noopener">Official site ↗</a>`:'<span class="hint">No website listed</span>'}<button type="button" class="wish-btn saved" data-remove-uni="${i}">♥</button></div></div>`).join('');
+  progEl.querySelectorAll('[data-remove-program]').forEach(btn=>btn.onclick=()=>{const cur=getWishlist();cur.programs.splice(Number(btn.dataset.removeProgram),1);saveWishlistData(cur);updateWishlistCount();renderWishlistTab();});
+  uniEl.querySelectorAll('[data-remove-uni]').forEach(btn=>btn.onclick=()=>{const cur=getWishlist();cur.universities.splice(Number(btn.dataset.removeUni),1);saveWishlistData(cur);updateWishlistCount();renderWishlistTab();});
+}
+updateWishlistCount();
+
+/* ---------------- Top announcement banner ---------------- */
+
+(function initTopBanner(){
+  const banner=document.getElementById('topBanner');
+  if(!banner)return;
+  if(localStorage.getItem('unimatchBannerDismissed')==='1'){ banner.classList.add('hidden'); return; }
+  const totalPrograms=Object.values(DATA.programs).flat().length;
+  const totalCountries=DATA.countries.filter(c=>(DATA.programs[c.name]||[]).length).length;
+  const textEl=document.getElementById('topBannerText');
+  if(textEl)textEl.innerHTML=`🎓 <b>${totalPrograms.toLocaleString()}</b> verified programs across <b>${totalCountries}</b> countries — real tuition, real sources, never guessed. Browse ${DIRECTORY.length.toLocaleString()} more in the directory.`;
+  const closeBtn=document.getElementById('topBannerClose');
+  if(closeBtn)closeBtn.onclick=()=>{banner.classList.add('hidden'); try{localStorage.setItem('unimatchBannerDismissed','1');}catch(e){}};
+})();
+
+/* ---------------- Back-to-top button ---------------- */
+
+(function initBackToTop(){
+  const btn=document.getElementById('backToTop');
+  if(!btn)return;
+  window.addEventListener('scroll',()=>{
+    btn.classList.toggle('hidden', window.scrollY<420);
+  });
+  btn.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+})();
+
+/* ---------------- Settings panel: theme picker (Light / Dark) ---------------- */
 
 const THEMES=[
   {value:'light',label:'Light'},
-  {value:'dark',label:'Dark'},
-  {value:'ocean',label:'Ocean'},
-  {value:'forest',label:'Forest'}
+  {value:'dark',label:'Dark'}
 ];
 function applySettingsUI(theme){
   document.querySelectorAll('.theme-option').forEach(btn=>{
