@@ -482,6 +482,7 @@ if(settingsToggleBtn && settingsPanel){
     settingsPanel.classList.toggle('hidden');
     settingsToggleBtn.setAttribute('aria-expanded', isHidden?'true':'false');
   };
+  const themeBg={light:'#f7f1e8',dark:'#16221e'};
   document.querySelectorAll('.theme-option').forEach(btn=>{
     btn.onclick=(e)=>{
       const theme=btn.dataset.themeChoice;
@@ -490,20 +491,29 @@ if(settingsToggleBtn && settingsPanel){
         try{localStorage.setItem('unimatchTheme', theme);}catch(err){}
         applySettingsUI(theme);
       };
-      if(document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-        const r=e.currentTarget.getBoundingClientRect();
-        const x=r.left+r.width/2, y=r.top+r.height/2;
-        const endRadius=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
-        const vt=document.startViewTransition(apply);
-        vt.ready.then(()=>{
-          document.documentElement.animate(
-            {clipPath:[`circle(0px at ${x}px ${y}px)`,`circle(${endRadius}px at ${x}px ${y}px)`]},
-            {duration:700,easing:'cubic-bezier(.4,0,.2,1)',pseudoElement:'::view-transition-new(root)'}
-          );
-        });
-      } else {
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
         apply();
+        return;
       }
+      const r=e.currentTarget.getBoundingClientRect();
+      const x=r.left+r.width/2, y=r.top+r.height/2;
+      const radius=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
+      const ripple=document.createElement('div');
+      ripple.className='theme-ripple';
+      ripple.style.left=(x-radius)+'px';
+      ripple.style.top=(y-radius)+'px';
+      ripple.style.width=ripple.style.height=(radius*2)+'px';
+      ripple.style.background=themeBg[theme]||themeBg.light;
+      document.body.appendChild(ripple);
+      ripple.getBoundingClientRect();
+      ripple.style.transition='transform .5s cubic-bezier(.65,0,.35,1)';
+      requestAnimationFrame(()=>{ripple.style.transform='scale(1)';});
+      ripple.addEventListener('transitionend',()=>{
+        apply();
+        ripple.style.transition='opacity .18s ease';
+        ripple.style.opacity='0';
+        setTimeout(()=>ripple.remove(),220);
+      },{once:true});
     };
   });
   document.addEventListener('click',(e)=>{
