@@ -15,20 +15,6 @@
   items.forEach(el=>io.observe(el));
 })();
 
-/* ---------------- Postcard links open their tab ---------------- */
-
-(function initTabDeepLinks(){
-  const map={'Begin →':'tabBtnFinder','Browse →':'tabBtnDirectory','Open →':'tabBtnWishlist'};
-  document.querySelectorAll('.postcard-foot a').forEach(a=>{
-    const id=map[a.textContent.trim()];
-    if(!id)return;
-    a.addEventListener('click',()=>{
-      const btn=document.getElementById(id);
-      if(btn)btn.click();
-    });
-  });
-})();
-
 /* ---------------- Settings panel: theme picker (Light / Dark) ---------------- */
 
 const THEMES=[
