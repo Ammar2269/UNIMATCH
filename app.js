@@ -1,5 +1,22 @@
 const DATA = window.VERIFIED_DATA;
-const DIRECTORY = window.UNIVERSITY_DIRECTORY; // [country, name, url][]
+/* The directory is ~1.5 MB and only the Browse tab needs it, so it is fetched on
+   demand. Until then DIRECTORY is empty and the headline count comes from
+   directory-meta.js, which is a few bytes. */
+let DIRECTORY = window.UNIVERSITY_DIRECTORY || []; // [country, name, url][]
+const DIRECTORY_TOTAL = window.DIRECTORY_COUNT ?? DIRECTORY.length;
+let directoryLoader = null;
+function loadDirectory(){
+  if(window.UNIVERSITY_DIRECTORY){DIRECTORY=window.UNIVERSITY_DIRECTORY;return Promise.resolve(DIRECTORY);}
+  if(directoryLoader)return directoryLoader;
+  directoryLoader=new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='universities-directory.js';
+    s.onload=()=>{DIRECTORY=window.UNIVERSITY_DIRECTORY||[];resolve(DIRECTORY);};
+    s.onerror=()=>{directoryLoader=null;reject(new Error('Could not load the university directory.'));};
+    document.head.appendChild(s);
+  });
+  return directoryLoader;
+}
 
 /* A broad major taxonomy with keyword synonyms, used for BOTH scoring matches and
    deciding which subject chips to show. This list is intentionally much bigger than
@@ -315,7 +332,7 @@ document.getElementById('resetProfile').onclick=resetForm;
 document.getElementById('countryStat').textContent=DATA.countries.length.toLocaleString();
 document.getElementById('programStat').textContent=sourcedCount().toLocaleString();
 (function(){const el=document.getElementById('unverifiedStat');if(el)el.textContent=unsourcedCount().toLocaleString();})();
-document.getElementById('directoryStat').textContent=DIRECTORY.length.toLocaleString();
+document.getElementById('directoryStat').textContent=DIRECTORY_TOTAL.toLocaleString();
 renderFieldSelect();renderLevelChips();renderMajorSelect();renderChecklist();renderCoverageSummary();
 
 function renderCoverageSummary(){
@@ -351,6 +368,15 @@ let dirInitialized=false;
 
 function initDirectoryOnce(){
   if(dirInitialized)return; dirInitialized=true;
+  const meta=document.getElementById('dirMeta');
+  if(meta && !window.UNIVERSITY_DIRECTORY)meta.textContent=`Loading ${DIRECTORY_TOTAL.toLocaleString()} universities…`;
+  loadDirectory().then(buildDirectoryUI).catch(err=>{
+    dirInitialized=false;
+    if(meta)meta.textContent='The directory could not be loaded. Check your connection and open this tab again.';
+    console.error(err);
+  });
+}
+function buildDirectoryUI(){
   const countryCounts=new Map();
   DIRECTORY.forEach(([country])=>countryCounts.set(country,(countryCounts.get(country)||0)+1));
   const countries=[...countryCounts.keys()].sort((a,b)=>a.localeCompare(b));
@@ -454,7 +480,7 @@ updateWishlistCount();
   if(localStorage.getItem('unimatchBannerDismissed')==='1'){ banner.classList.add('hidden'); return; }
   const totalCountries=DATA.countries.filter(c=>(DATA.programs[c.name]||[]).length).length;
   const textEl=document.getElementById('topBannerText');
-  if(textEl)textEl.innerHTML=`✦ <b>${sourcedCount().toLocaleString()}</b> source-linked programmes across <b>${totalCountries}</b> countries, plus <b>${unsourcedCount().toLocaleString()}</b> unverified records clearly marked as such. Browse ${DIRECTORY.length.toLocaleString()} universities in the directory.`;
+  if(textEl)textEl.innerHTML=`✦ <b>${sourcedCount().toLocaleString()}</b> source-linked programmes across <b>${totalCountries}</b> countries, plus <b>${unsourcedCount().toLocaleString()}</b> unverified records clearly marked as such. Browse ${DIRECTORY_TOTAL.toLocaleString()} universities in the directory.`;
   const closeBtn=document.getElementById('topBannerClose');
   if(closeBtn)closeBtn.onclick=()=>{banner.classList.add('hidden'); try{localStorage.setItem('unimatchBannerDismissed','1');}catch(e){}};
 })();
