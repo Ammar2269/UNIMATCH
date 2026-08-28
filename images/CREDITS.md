@@ -1,14 +1,17 @@
 # Image credits
 
-All three plates are **public domain** photochrom prints from the Library of Congress
-Photochrom Print Collection, retrieved via Wikimedia Commons. No rights are reserved and
-no attribution is legally required; it is given here as good practice.
+All three plates are **public domain / CC0**. No rights are reserved and no attribution
+is legally required; it is given here as good practice.
 
-| File | Subject | Source |
-|---|---|---|
-| `plate-vienna.jpg` | University of Vienna, Austria, c. 1900 | [Commons: The University, Vienna, Austro-Hungary-LCCN2002708401](https://commons.wikimedia.org/wiki/File:The_University,_Vienna,_Austro-Hungary-LCCN2002708401.tif) |
-| `plate-bonn.jpg` | University of Bonn, Germany, c. 1900 | [Commons: University, Bonn, the Rhine, Germany-LCCN2002714065](https://commons.wikimedia.org/wiki/File:University,_Bonn,_the_Rhine,_Germany-LCCN2002714065.tif) |
-| `plate-leipzig.jpg` | Leipzig University and the Mendebrunnen, Germany, c. 1900 | [Commons: University and Mendebrunnen, Leipsig (i.e., Leipzig), Saxony, Germany-LCCN2002720592](https://commons.wikimedia.org/wiki/File:University_and_Mendebrunnen,_Leipsig_(i.e.,_Leipzig),_Saxony,_Germany-LCCN2002720592.tif) |
+| File | Subject | Region | Author / date | Source |
+|---|---|---|---|---|
+| `plate-vienna.jpg` | University of Vienna and the Ringstrasse | Europe | Detroit Publishing Co., c. 1900 | [Commons](https://commons.wikimedia.org/wiki/File:The_University,_Vienna,_Austro-Hungary-LCCN2002708401.tif) |
+| `plate-bombay.jpg` | University of Bombay gardens, Rajabai Clock Tower | Asia | Photoglob Co., 1890 | [Commons](https://commons.wikimedia.org/wiki/File:Bombay_University_Garden_LCCN2017658174.jpg) |
+| `plate-dubai.jpg` | Dubai skyline at night | Gulf | Robert Bock, 2016 (CC0) | [Commons](https://commons.wikimedia.org/wiki/File:Dubai_skyline_unsplash.jpg) |
 
-Publisher: Detroit Publishing Co. / Photoglob Zürich. Each file was downscaled to 1920px
-wide from the Commons original; no other modification was made to the source images.
+Plates I and II are photochrom prints from the Library of Congress Photochrom Print
+Collection. Plate III is released under the Creative Commons Zero public-domain
+dedication.
+
+Each file was downscaled to 1920px wide from the Commons original; no other
+modification was made to the source images.

@@ -312,7 +312,7 @@ function showCountry(name){
     const p=match.programs[Number(btn.dataset.wishIdx)];
     const item={type:'program',country:match.name,flag:match.flag,university:p.university,program:p.program,field:p.field,city:p.city,tuition:p.tuition,language:p.language,level:p.level,sources:p.sources||[]};
     setWishBtnState(btn,isProgramSaved(item));
-    btn.onclick=()=>{const saved=toggleProgramWishlist(item);setWishBtnState(btn,saved);renderWishlistTab();};
+    btn.onclick=()=>{if(!requireAccount("Saving to your wishlist"))return;const saved=toggleProgramWishlist(item);setWishBtnState(btn,saved);renderWishlistTab();};
   });
   document.getElementById('universityView').scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -325,13 +325,22 @@ function renderChecklist(){
 function updateProgress(){const boxes=[...document.querySelectorAll('#checkGrid input')],done=boxes.filter(x=>x.checked).length,pct=boxes.length?Math.round(done/boxes.length*100):0;document.getElementById('progressFill').style.width=pct+'%';document.getElementById('progressText').textContent=`${pct}% complete (${done}/${boxes.length})`;}
 function resetForm(){document.getElementById('profileForm').reset();document.getElementById('tuition').value=4500;document.getElementById('living').value=900;document.getElementById('noExam').checked=true;state.field=FIELD_NAMES[0];state.subject=ANY_MAJOR;state.level='bachelor';renderFieldSelect();renderLevelChips();renderMajorSelect();}
 
-document.getElementById('profileForm').addEventListener('submit',e=>{e.preventDefault();state.profile=profileFromForm();state.matches=buildCountryMatches(state.profile);localStorage.setItem('unimatchProfile',JSON.stringify(state.profile));renderCountryResults();});
+document.getElementById('profileForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  if(!requireAccount('Matching countries to your budget'))return;
+  state.profile=profileFromForm();state.matches=buildCountryMatches(state.profile);
+  localStorage.setItem('unimatchProfile',JSON.stringify(state.profile));
+  renderCountryResults();
+});
 document.getElementById('editProfile').onclick=()=>{document.getElementById('countryResults').classList.add('hidden');document.getElementById('profileForm').classList.remove('hidden');document.getElementById('step1').classList.add('active');document.getElementById('step2').classList.remove('active');};
 document.getElementById('backCountries').onclick=renderCountryResults;
 document.getElementById('resetProfile').onclick=resetForm;
 document.getElementById('countryStat').textContent=DATA.countries.length.toLocaleString();
 document.getElementById('programStat').textContent=sourcedCount().toLocaleString();
-(function(){const el=document.getElementById('unverifiedStat');if(el)el.textContent=unsourcedCount().toLocaleString();})();
+(function(){
+  const el=document.getElementById('unverifiedStat');if(el)el.textContent=unsourcedCount().toLocaleString();
+  const st=document.getElementById('stampStat');if(st)st.textContent=sourcedCount().toLocaleString();
+})();
 document.getElementById('directoryStat').textContent=DIRECTORY_TOTAL.toLocaleString();
 renderFieldSelect();renderLevelChips();renderMajorSelect();renderChecklist();renderCoverageSummary();
 
@@ -358,8 +367,14 @@ function activateTab(btn,panel){
   btn.classList.add('active'); panel.classList.add('active');
 }
 tabBtnFinder.onclick=()=>activateTab(tabBtnFinder,tabFinder);
-tabBtnDirectory.onclick=()=>{activateTab(tabBtnDirectory,tabDirectory);initDirectoryOnce();};
-if(tabBtnWishlist&&tabWishlist)tabBtnWishlist.onclick=()=>{activateTab(tabBtnWishlist,tabWishlist);renderWishlistTab();};
+tabBtnDirectory.onclick=()=>{
+  if(!requireAccount('Browsing the full university directory'))return;
+  activateTab(tabBtnDirectory,tabDirectory);initDirectoryOnce();
+};
+if(tabBtnWishlist&&tabWishlist)tabBtnWishlist.onclick=()=>{
+  if(!requireAccount('Your wishlist'))return;
+  activateTab(tabBtnWishlist,tabWishlist);renderWishlistTab();
+};
 
 /* ---------------- Browse directory (raw CSV data, unscored) ---------------- */
 
@@ -417,7 +432,7 @@ function renderDirectoryPage(){
     const [country,name,url]=slice[Number(btn.dataset.dirWishIdx)];
     const item={type:'university',country,name,url};
     setWishBtnState(btn,isUniSaved(item));
-    btn.onclick=()=>{const saved=toggleUniWishlist(item);setWishBtnState(btn,saved);renderWishlistTab();};
+    btn.onclick=()=>{if(!requireAccount("Saving to your wishlist"))return;const saved=toggleUniWishlist(item);setWishBtnState(btn,saved);renderWishlistTab();};
   });
   document.getElementById('dirPageLabel').textContent=`Page ${clampedPage+1} of ${pages}`;
   document.getElementById('dirPrev').disabled=clampedPage<=0;

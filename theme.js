@@ -1,3 +1,10 @@
+/* ---------------- Sign out ---------------- */
+
+(function initSignOut(){
+  const btn=document.getElementById('signOutBtn');
+  if(btn && typeof signOut==='function')btn.onclick=signOut;
+})();
+
 /* ---------------- Reveal-on-scroll ---------------- */
 
 (function initReveal(){

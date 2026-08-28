@@ -43,16 +43,30 @@
     <div class="field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="email" required placeholder="you@example.com"></div>
     <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" required placeholder="••••••••"></div>
     <button class="primary" type="submit">Log in →</button>
-    <p class="auth-note" id="loginNote">Accounts aren't set up yet — this page is a preview of the sign-in flow. Your search profile and wishlist already save locally in this browser without needing one.</p>
+    <p class="auth-note" id="loginNote"><b>There is no server behind this yet.</b> Accounts live in this browser only, so the password cannot be checked against anything. Logging in on a different device or browser is not possible until real accounts exist.</p>
     <p class="auth-switch">New here? <a href="signup.html">Create an account</a></p>
   </form>
 </section>
 </div>
+<script src="account.js"></script>
 <script src="theme.js"></script>
 <script>
 document.getElementById('loginForm').addEventListener('submit', function(e){
   e.preventDefault();
-  document.getElementById('loginNote').textContent = "Accounts aren't set up yet, so there's nothing to log in to — but this is exactly how it'll work once they are.";
+  var email = document.getElementById('loginEmail').value.trim();
+  var existing = getAccount();
+  var note = document.getElementById('loginNote');
+  if(existing && existing.email && existing.email.toLowerCase() === email.toLowerCase()){
+    note.innerHTML = '<b>Welcome back.</b> Taking you to the finder…';
+    setTimeout(function(){ location.href = 'index.html#tool'; }, 800);
+    return;
+  }
+  if(existing){
+    note.innerHTML = '<b>No account with that email in this browser.</b> The one saved here is <em>' +
+      existing.email.replace(/[<>&]/g, '') + '</em>. Accounts do not sync between devices yet.';
+    return;
+  }
+  note.innerHTML = '<b>No account exists in this browser yet.</b> <a href="signup.html">Create one</a> — it takes a moment.';
 });
 </script>
 </body>

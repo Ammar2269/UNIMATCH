@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Find universities by tuition budget, monthly living budget, subject, and degree level — or browse a global directory of 11,000+ universities.">
+<meta name="description" content="Find universities by tuition budget, monthly living budget, subject, and degree level — or browse an open directory of 20,000+ universities.">
 <title>UniMatch — University Finder</title>
 <script>
 (function(){
@@ -38,9 +38,11 @@
       <div class="nav-right">
         <a class="nav-link" href="#dossier">The Method</a>
         <a class="nav-link" href="#tool">Find a University</a>
+        <a class="nav-link" href="#quiz">Quiz</a>
         <a class="nav-link" href="#plates">Plates</a>
-        <a class="nav-link" href="login.html">Log in</a>
-        <a class="nav-cta" href="signup.html">Sign up</a>
+        <a class="nav-link" href="login.html" data-when-signed-out>Log in</a>
+        <a class="nav-cta" href="signup.html" data-when-signed-out>Sign up</a>
+        <span class="nav-account hidden" data-when-signed-in><span id="accountName"></span><button type="button" class="nav-signout" id="signOutBtn">Sign out</button></span>
         <div class="settings-wrap">
           <button class="theme-toggle" id="settingsToggle" type="button" aria-label="Open settings" aria-expanded="false"><span aria-hidden="true">✦</span><span>Theme</span></button>
           <div class="settings-panel hidden" id="settingsPanel">
@@ -119,7 +121,7 @@
       <article class="ed-item">
         <span class="ed-num">№ 05</span>
         <h3>Yours, and only yours.</h3>
-        <p>Your profile, wishlist, and checklist are stored in this browser. No account required, nothing transmitted.</p>
+        <p>Your profile, wishlist, and checklist are stored in this browser and nothing is transmitted. The account the finder asks for lives in this browser too — there is no server to send it to.</p>
         <span class="label plain">Private by default</span>
       </article>
     </div>
@@ -144,7 +146,7 @@
     <div class="cta-inner reveal">
       <span class="label">The archive is open</span>
       <h2>Find out what your budget<br>is <em>actually</em> worth.</h2>
-      <p>It takes about a minute. No account, no email, no cost — and every figure you see comes with the page it was taken from.</p>
+      <p>It takes about a minute, and it costs nothing. Every figure you see comes with the page it was taken from.</p>
       <div class="cta-actions">
         <a class="btn btn-primary" href="#tool">Start matching <span class="arrow">→</span></a>
         <a class="btn btn-ghost" href="signup.html">Create an account</a>
@@ -248,48 +250,80 @@
 </div>
 </section>
 
-<!-- ── 6. The Plates ─────────────────────────────────────── -->
+<!-- ── 6. The Quiz (just for fun) ────────────────────────── -->
+<section class="section quiz-section" id="quiz">
+  <div class="shell-narrow">
+    <div class="section-head reveal" style="justify-content:center;text-align:center">
+      <div>
+        <span class="label">Diversion</span>
+        <h2 style="margin-top:14px">Where in the world<br>do you belong?</h2>
+      </div>
+    </div>
+
+    <div class="quiz-card reveal">
+      <div id="quizIntro" class="quiz-intro">
+        <p>Ten questions, no budgets, no entry requirements — just what kind of place feels like yours. Nothing is saved and nothing is scored against real data.</p>
+        <button type="button" class="btn btn-primary" id="quizStart">Start the quiz <span class="arrow">&#8594;</span></button>
+      </div>
+
+      <div id="quizProgress" class="quiz-progress hidden">
+        <div class="quiz-bar-track"><div class="quiz-bar" id="quizBar"></div></div>
+        <span class="quiz-counter" id="quizCounter"></span>
+      </div>
+
+      <div id="quizStage" class="quiz-stage hidden">
+        <h3 class="quiz-question" id="quizQuestion" tabindex="-1"></h3>
+        <div class="quiz-options" id="quizOptions"></div>
+        <button type="button" class="quiz-back hidden" id="quizBack">&#8592; Previous question</button>
+      </div>
+
+      <div id="quizResult" class="hidden"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 7. The Plates ─────────────────────────────────────── -->
 <section class="section plates" id="plates">
   <div class="shell">
     <div class="section-head reveal">
       <div>
         <span class="label">The Plates</span>
-        <h2 style="margin-top:14px">The old continent,<br>as it was photographed.</h2>
+        <h2 style="margin-top:14px">Three continents,<br>a century apart.</h2>
       </div>
-      <p>Photochrom prints of three European universities, made around 1900. All are in the public domain, held by the Library of Congress.</p>
+      <p>Europe and Asia as the photochrom printers saw them around 1890, and the Gulf as it looks today. All three are in the public domain.</p>
     </div>
 
     <div class="plate-grid reveal">
       <figure class="plate plate-wide">
-        <div class="stamp"><span>Verified</span><b>1,250</b><span>Programmes</span></div>
+        <div class="stamp"><span>Source-linked</span><b id="stampStat">2,219</b><span>Programmes</span></div>
         <div class="plate-img">
           <img src="images/plate-vienna.jpg" alt="Photochrom print of the University of Vienna and the surrounding Ringstrasse, around 1900" loading="lazy" decoding="async" width="1920" height="1430">
         </div>
-        <figcaption class="plate-caption"><span>Plate I — Universität Wien</span><span>c. 1900</span></figcaption>
+        <figcaption class="plate-caption"><span>Plate I — Universität Wien, Austria</span><span>Europe · c. 1900</span></figcaption>
       </figure>
 
       <figure class="plate">
         <div class="plate-img">
-          <img src="images/plate-bonn.jpg" alt="Photochrom print of the main building of the University of Bonn seen across its lawn, around 1900" loading="lazy" decoding="async" width="1920" height="1449">
+          <img src="images/plate-bombay.jpg" alt="Photochrom print of the University of Bombay gardens with the Rajabai Clock Tower and people gathered on the lawn, 1890" loading="lazy" decoding="async" width="1920" height="1487">
         </div>
-        <figcaption class="plate-caption"><span>Plate II — Universität Bonn</span><span>c. 1900</span></figcaption>
+        <figcaption class="plate-caption"><span>Plate II — University of Bombay, India</span><span>Asia · 1890</span></figcaption>
       </figure>
 
       <figure class="plate">
-        <div class="plate-img">
-          <img src="images/plate-leipzig.jpg" alt="Photochrom print of Leipzig University with the Mendebrunnen fountain and passers-by, around 1900" loading="lazy" decoding="async" width="1920" height="1448">
+        <div class="plate-img plate-modern">
+          <img src="images/plate-dubai.jpg" alt="The Dubai skyline at night reflected in the water, with the Burj Khalifa at the centre" loading="lazy" decoding="async" width="1920" height="1280">
         </div>
-        <figcaption class="plate-caption"><span>Plate III — Universität Leipzig</span><span>c. 1900</span></figcaption>
+        <figcaption class="plate-caption"><span>Plate III — Dubai, United Arab Emirates</span><span>Gulf · present day</span></figcaption>
       </figure>
     </div>
 
     <p class="plate-credit reveal">
-      Photochrom prints by the Detroit Publishing Co., from the Library of Congress Photochrom Print Collection, via Wikimedia Commons. Public domain — no rights reserved.
+      Plates I and II are photochrom prints held by the Library of Congress — Vienna by the Detroit Publishing Co., Bombay by Photoglob Co., 1890. Plate III is by Robert Bock, released under CC0. All via Wikimedia Commons; public domain, no rights reserved.
     </p>
   </div>
 </section>
 
-<!-- ── 7. Footer ─────────────────────────────────────────── -->
+<!-- ── 8. Footer ─────────────────────────────────────────── -->
 <footer>
   <div class="shell">
     <div class="ornament" style="margin-bottom:38px"><span></span><em>✦ ❧ ✦</em><span></span></div>
@@ -310,14 +344,17 @@
     <p class="foot-note">The programme database holds two kinds of record. Source-linked programmes carry links to the official pages their figures came from. Unverified records come from bulk datasets, are labelled <em>unverified</em> wherever they appear, carry no source links, and are excluded from results entirely when strict mode is on. The directory is unscored and unverified beyond name, country, and website. University fees, deadlines, admission rules, and visa requirements change constantly. Treat both as a discovery starting point, then confirm every important detail on the official university page before paying anything. “Best match” means best fit for the profile entered, not an official global ranking.</p>
     <div class="foot-bottom">
       <span>UniMatch — Free &amp; open university search</span>
-      <span>Saved locally · No account required</span>
+      <span>Saved locally · Nothing transmitted</span>
     </div>
   </div>
 </footer>
 
 <script src="verified-data.js"></script>
+<script src="account.js"></script>
 <script src="directory-meta.js"></script>
 <script src="app.js"></script>
+<script src="quiz.js"></script>
+<script src="quiz-ui.js"></script>
 <script src="theme.js"></script>
 </body>
 </html>
