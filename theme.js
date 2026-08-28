@@ -1,3 +1,34 @@
+/* ---------------- Reveal-on-scroll ---------------- */
+
+(function initReveal(){
+  const items=document.querySelectorAll('.reveal');
+  if(!items.length)return;
+  if(document.documentElement.classList.contains('no-motion')||!('IntersectionObserver' in window)){
+    items.forEach(el=>el.classList.add('in'));
+    return;
+  }
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){entry.target.classList.add('in');io.unobserve(entry.target);}
+    });
+  },{rootMargin:'0px 0px -12% 0px',threshold:.08});
+  items.forEach(el=>io.observe(el));
+})();
+
+/* ---------------- Postcard links open their tab ---------------- */
+
+(function initTabDeepLinks(){
+  const map={'Begin →':'tabBtnFinder','Browse →':'tabBtnDirectory','Open →':'tabBtnWishlist'};
+  document.querySelectorAll('.postcard-foot a').forEach(a=>{
+    const id=map[a.textContent.trim()];
+    if(!id)return;
+    a.addEventListener('click',()=>{
+      const btn=document.getElementById(id);
+      if(btn)btn.click();
+    });
+  });
+})();
+
 /* ---------------- Settings panel: theme picker (Light / Dark) ---------------- */
 
 const THEMES=[

@@ -262,7 +262,7 @@ function renderCountryResults(){
   document.getElementById('step1').classList.remove('active');document.getElementById('step2').classList.add('active');document.getElementById('step3').classList.remove('active');
   const exact=matches.reduce((s,c)=>s+c.exact,0);
   document.getElementById('resultSummary').textContent=matches.length?`${matches.length} countries contain possible records; ${exact} program${exact===1?'':'s'} meet the strict match rules.`:'No verified database records match every selected requirement yet.';
-  document.getElementById('profileSummary').innerHTML=[`€${p.tuition.toLocaleString()}/year tuition`,`€${p.living.toLocaleString()}/month living`,p.subject,p.level[0].toUpperCase()+p.level.slice(1),p.language,p.noExam?'Avoid exams':'Exams allowed',p.strict?'Strict budget':'Flexible budget'].map(x=>`<span class="summary-pill">${x}</span>`).join('');
+  document.getElementById('profileSummary').innerHTML=[`€${p.tuition.toLocaleString()}/year tuition`,`€${p.living.toLocaleString()}/month living`,p.subject,p.level[0].toUpperCase()+p.level.slice(1),p.language,p.noExam?'Avoid exams':'Exams allowed',p.strict?'Strict budget':'Flexible budget'].filter(Boolean).map(x=>`<span class="summary-pill">${x}</span>`).join('');
   const grid=document.getElementById('countryGrid');
   if(!matches.length){
     const levelNote=p.level!=='bachelor'?` The verified database currently contains mostly bachelor-level records, so ${p.level} results must be added before this option can return a complete list.`:'';
@@ -303,9 +303,9 @@ document.getElementById('profileForm').addEventListener('submit',e=>{e.preventDe
 document.getElementById('editProfile').onclick=()=>{document.getElementById('countryResults').classList.add('hidden');document.getElementById('profileForm').classList.remove('hidden');document.getElementById('step1').classList.add('active');document.getElementById('step2').classList.remove('active');};
 document.getElementById('backCountries').onclick=renderCountryResults;
 document.getElementById('resetProfile').onclick=resetForm;
-document.getElementById('countryStat').textContent=`${DATA.countries.length} countries in verified database`;
-document.getElementById('programStat').textContent=`${Object.values(DATA.programs).flat().length} verified program cards`;
-document.getElementById('directoryStat').textContent=`${DIRECTORY.length.toLocaleString()} universities to browse`;
+document.getElementById('countryStat').textContent=DATA.countries.length.toLocaleString();
+document.getElementById('programStat').textContent=Object.values(DATA.programs).flat().length.toLocaleString();
+document.getElementById('directoryStat').textContent=DIRECTORY.length.toLocaleString();
 renderFieldSelect();renderLevelChips();renderMajorSelect();renderChecklist();renderCoverageSummary();
 
 function renderCoverageSummary(){

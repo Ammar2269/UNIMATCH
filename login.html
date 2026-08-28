@@ -15,17 +15,17 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Archivo:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="shell">
+<div class="nav-wrap"><div class="shell">
 <nav><a class="brand" href="index.html">Uni<span>Match</span></a><div class="nav-right">
   <a class="nav-link" href="signup.html">Need an account?</a>
   <div class="settings-wrap">
-    <button class="theme-toggle" id="settingsToggle" type="button" aria-label="Open settings" aria-expanded="false"><span aria-hidden="true">⚙</span><span>Settings</span></button>
+    <button class="theme-toggle" id="settingsToggle" type="button" aria-label="Open settings" aria-expanded="false"><span aria-hidden="true">✦</span><span>Theme</span></button>
     <div class="settings-panel hidden" id="settingsPanel">
-      <div class="settings-title">Theme</div>
+      <div class="settings-title">Appearance</div>
       <div class="theme-options">
         <button type="button" class="theme-option" data-theme-choice="light"><span class="theme-swatch swatch-light"></span>Light</button>
         <button type="button" class="theme-option" data-theme-choice="dark"><span class="theme-swatch swatch-dark"></span>Dark</button>
@@ -33,6 +33,8 @@
     </div>
   </div>
 </div></nav>
+</div></div>
+<div class="shell">
 
 <section class="auth-wrap">
   <form class="auth-card" id="loginForm">

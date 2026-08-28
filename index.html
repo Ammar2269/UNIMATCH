@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Find universities by tuition budget, monthly living budget, subject, and degree level — or browse a global directory of 9,000+ universities.">
+<meta name="description" content="Find universities by tuition budget, monthly living budget, subject, and degree level — or browse a global directory of 11,000+ universities.">
 <title>UniMatch — University Finder</title>
 <script>
 (function(){
@@ -12,121 +12,389 @@
     var theme=saved||(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
     document.documentElement.setAttribute('data-theme', theme);
   }catch(e){}
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.documentElement.classList.add('no-motion');
+  }
 })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Archivo:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
 <div class="top-banner" id="topBanner">
   <span id="topBannerText">✦ Loading current coverage…</span>
   <button type="button" id="topBannerClose" aria-label="Dismiss banner">✕</button>
 </div>
+
 <button type="button" id="backToTop" class="back-to-top hidden" aria-label="Back to top">↑</button>
-<div class="shell">
-<nav><a class="brand" href="index.html">Uni<span>Match</span></a><div class="nav-right">
-  <a class="nav-link" href="login.html">Log in</a>
-  <a class="nav-cta" href="signup.html">Sign up</a>
-  <div class="settings-wrap">
-    <button class="theme-toggle" id="settingsToggle" type="button" aria-label="Open settings" aria-expanded="false"><span aria-hidden="true">⚙</span><span>Settings</span></button>
-    <div class="settings-panel hidden" id="settingsPanel">
-      <div class="settings-title">Theme</div>
-      <div class="theme-options">
-        <button type="button" class="theme-option" data-theme-choice="light"><span class="theme-swatch swatch-light"></span>Light</button>
-        <button type="button" class="theme-option" data-theme-choice="dark"><span class="theme-swatch swatch-dark"></span>Dark</button>
+
+<div class="nav-wrap">
+  <div class="shell">
+    <nav>
+      <a class="brand" href="index.html">Uni<span>Match</span></a>
+      <div class="nav-right">
+        <a class="nav-link" href="#dossier">The Method</a>
+        <a class="nav-link" href="#tool">Find a University</a>
+        <a class="nav-link" href="login.html">Log in</a>
+        <a class="nav-cta" href="signup.html">Sign up</a>
+        <div class="settings-wrap">
+          <button class="theme-toggle" id="settingsToggle" type="button" aria-label="Open settings" aria-expanded="false"><span aria-hidden="true">✦</span><span>Theme</span></button>
+          <div class="settings-panel hidden" id="settingsPanel">
+            <div class="settings-title">Appearance</div>
+            <div class="theme-options">
+              <button type="button" class="theme-option" data-theme-choice="light"><span class="theme-swatch swatch-light"></span>Light</button>
+              <button type="button" class="theme-option" data-theme-choice="dark"><span class="theme-swatch swatch-dark"></span>Dark</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<!-- ── 1. Hero ─────────────────────────────────────────────── -->
+<header class="hero">
+  <div class="shell">
+    <div class="hero-grid">
+      <div class="reveal">
+        <span class="label">Est. for students who read the fine print</span>
+        <h1>A university that fits your <em>real</em> budget.</h1>
+      </div>
+      <p class="hero-lede reveal">
+        Most rankings tell you which universities are prestigious. <strong>None of them tell you which ones you can actually afford.</strong>
+        UniMatch starts from your tuition ceiling and monthly living budget, then works outward — using only figures we have verified against the university's own pages.
+      </p>
+    </div>
+    <div class="hero-actions reveal">
+      <a class="btn btn-primary" href="#tool">Build your profile <span class="arrow">→</span></a>
+      <a class="btn btn-ghost" href="#dossier">How it works</a>
+    </div>
+    <div class="hero-meta reveal">
+      <span>№ 01 — Budget first</span>
+      <span>№ 02 — Source-linked</span>
+      <span>№ 03 — No invented prices</span>
+    </div>
+  </div>
+</header>
+
+<!-- ── 2. Plate / collage ──────────────────────────────────── -->
+<section class="shell" style="padding-bottom:clamp(72px,9vw,120px)">
+  <div class="collage reveal">
+    <figure class="plate" style="margin:0">
+      <div class="stamp"><span>Verified</span><b>1,250</b><span>Programmes</span></div>
+      <svg viewBox="0 0 800 470" role="img" aria-label="Engraved illustration of a European university quadrangle">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#284c45"/><stop offset="100%" stop-color="#1a332e"/>
+          </linearGradient>
+          <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#9fc39e" stop-opacity=".30"/><stop offset="100%" stop-color="#9fc39e" stop-opacity=".05"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="470" fill="url(#sky)"/>
+        <g stroke="#9fc39e" stroke-opacity=".16" stroke-width="1">
+          <path d="M0 340h800M0 380h800M0 420h800"/>
+        </g>
+        <!-- distant spires -->
+        <g fill="#9fc39e" fill-opacity=".14">
+          <path d="M92 340V214l30-46 30 46v126z"/><path d="M690 340V236l24-38 24 38v102z"/>
+        </g>
+        <!-- main facade -->
+        <g fill="url(#fade)" stroke="#9fc39e" stroke-opacity=".5" stroke-width="1.1">
+          <path d="M232 340V150h336v190z"/>
+          <path d="M232 150 400 74l168 76z"/>
+        </g>
+        <!-- arcade -->
+        <g fill="#1a332e" fill-opacity=".55" stroke="#9fc39e" stroke-opacity=".55" stroke-width="1.1">
+          <path d="M270 340v-92a30 30 0 0 1 60 0v92z"/>
+          <path d="M370 340v-92a30 30 0 0 1 60 0v92z"/>
+          <path d="M470 340v-92a30 30 0 0 1 60 0v92z"/>
+        </g>
+        <!-- clock -->
+        <circle cx="400" cy="132" r="21" fill="none" stroke="#9fc39e" stroke-opacity=".65" stroke-width="1.2"/>
+        <path d="M400 132V119M400 132l9 7" stroke="#9fc39e" stroke-opacity=".65" stroke-width="1.2" fill="none"/>
+        <!-- foreground rule + figures -->
+        <g fill="#9fc39e" fill-opacity=".28">
+          <ellipse cx="176" cy="404" rx="9" ry="26"/><ellipse cx="208" cy="410" rx="8" ry="22"/><ellipse cx="612" cy="406" rx="9" ry="24"/>
+        </g>
+      </svg>
+      <figcaption class="plate-caption"><span>Plate I — The quadrangle</span><span>Archive</span></figcaption>
+    </figure>
+
+    <div class="collage-stack">
+      <figure class="plate" style="margin:0">
+        <svg viewBox="0 0 400 236" role="img" aria-label="Engraved illustration of an open ledger">
+          <rect width="400" height="236" fill="#f7f1e8"/>
+          <g stroke="#284c45" stroke-opacity=".2" stroke-width="1">
+            <path d="M0 40h400M0 76h400M0 112h400M0 148h400M0 184h400"/>
+          </g>
+          <g fill="none" stroke="#284c45" stroke-opacity=".62" stroke-width="1.3">
+            <path d="M64 186V78l136-26 136 26v108"/><path d="M200 52v134"/>
+          </g>
+          <g fill="#284c45" fill-opacity=".24">
+            <rect x="86" y="92" width="88" height="5" rx="2.5"/><rect x="86" y="108" width="72" height="5" rx="2.5"/>
+            <rect x="86" y="124" width="94" height="5" rx="2.5"/><rect x="226" y="92" width="80" height="5" rx="2.5"/>
+            <rect x="226" y="108" width="92" height="5" rx="2.5"/><rect x="226" y="124" width="66" height="5" rx="2.5"/>
+          </g>
+          <circle cx="200" cy="52" r="6" fill="#9fc39e"/>
+        </svg>
+        <figcaption class="plate-caption"><span>Plate II — The ledger</span><span>Fig. 2</span></figcaption>
+      </figure>
+      <figure class="plate" style="margin:0">
+        <svg viewBox="0 0 400 236" role="img" aria-label="Engraved illustration of a compass over a map">
+          <rect width="400" height="236" fill="#284c45"/>
+          <g stroke="#9fc39e" stroke-opacity=".22" stroke-width="1" fill="none">
+            <path d="M40 0v236M120 0v236M200 0v236M280 0v236M360 0v236M0 60h400M0 120h400M0 180h400"/>
+          </g>
+          <circle cx="200" cy="118" r="62" fill="none" stroke="#9fc39e" stroke-opacity=".7" stroke-width="1.3"/>
+          <circle cx="200" cy="118" r="46" fill="none" stroke="#9fc39e" stroke-opacity=".35" stroke-width="1"/>
+          <path d="M200 56 216 118 200 180 184 118z" fill="#9fc39e" fill-opacity=".6"/>
+          <path d="M138 118 200 102l62 16-62 16z" fill="#f7f1e8" fill-opacity=".28"/>
+          <circle cx="200" cy="118" r="4" fill="#f7f1e8"/>
+        </svg>
+        <figcaption class="plate-caption"><span>Plate III — 74 countries</span><span>Fig. 3</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ── 3. Featured editorial grid ──────────────────────────── -->
+<section class="section" id="dossier" style="padding-top:0">
+  <div class="shell">
+    <div class="section-head reveal">
+      <div>
+        <span class="label">The Method</span>
+        <h2 style="margin-top:14px">Three principles,<br>held without exception.</h2>
+      </div>
+      <p>Everything below is a constraint we accepted at the cost of covering fewer schools. It is the whole reason the numbers here can be trusted.</p>
+    </div>
+    <div class="editorial reveal">
+      <article class="ed-item wide">
+        <span class="ed-num">№ 01</span>
+        <h3>Your budget is the first filter, not the last.</h3>
+        <p>Conventional search asks for a subject, returns a ranked list, and leaves you to discover the price at the very end. We invert it. Tuition ceiling and monthly living costs come first, so nothing you see is out of reach by the time you fall in love with it.</p>
+        <span class="label plain">Budget-led ranking</span>
+      </article>
+      <article class="ed-item wide">
+        <span class="ed-num">№ 02</span>
+        <h3>Every figure traces back to the university.</h3>
+        <p>Each verified programme card carries links to the source pages the numbers came from. If a tuition fee or deadline cannot be confirmed on an official page, it does not become a match — it stays out, or it is labelled uncertain and you decide.</p>
+        <span class="label plain">Source-linked data</span>
+      </article>
+      <article class="ed-item">
+        <span class="ed-num">№ 03</span>
+        <h3>Nothing is estimated.</h3>
+        <p>No modelled averages, no filled-in gaps, no invented prices dressed up as research.</p>
+        <span class="label plain">No guessed numbers</span>
+      </article>
+      <article class="ed-item">
+        <span class="ed-num">№ 04</span>
+        <h3>Match ≠ ranking.</h3>
+        <p>A score here means fit against the profile you entered. It is not a claim about a university's global standing.</p>
+        <span class="label plain">Honest scoring</span>
+      </article>
+      <article class="ed-item">
+        <span class="ed-num">№ 05</span>
+        <h3>Yours, and only yours.</h3>
+        <p>Your profile, wishlist, and checklist are stored in this browser. No account required, nothing transmitted.</p>
+        <span class="label plain">Private by default</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ── 4. Statistics ───────────────────────────────────────── -->
+<section class="shell" style="padding-bottom:clamp(72px,9vw,120px)">
+  <div class="figures reveal">
+    <div class="figures-row">
+      <div class="figure"><b id="programStat">—</b><span>Verified<br>programmes</span></div>
+      <div class="figure"><b id="countryStat">—</b><span>Countries in the<br>verified database</span></div>
+      <div class="figure"><b id="directoryStat">—</b><span>Universities in the<br>open directory</span></div>
+      <div class="figure"><b>0</b><span>Prices we<br>invented</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 5. Postcards ────────────────────────────────────────── -->
+<section class="section" style="padding-top:0">
+  <div class="shell">
+    <div class="section-head reveal">
+      <div>
+        <span class="label">Dispatches</span>
+        <h2 style="margin-top:14px">Three ways in.</h2>
+      </div>
+      <p>Start wherever suits you — the tool below opens on whichever you choose.</p>
+    </div>
+    <div class="postcards reveal">
+      <article class="postcard">
+        <div class="postcard-top">
+          <div><span class="label plain">Recto</span><h3 style="margin-top:10px">The Match Finder</h3></div>
+          <div class="postmark">✦</div>
+        </div>
+        <p>Enter what you can spend, what you want to study, and your degree level. Countries are ranked by how many verified programmes genuinely fit — strongest to weakest.</p>
+        <hr class="rule">
+        <div class="postcard-foot"><span>Budget-led</span><a class="script" href="#tool">Begin →</a></div>
+      </article>
+      <article class="postcard">
+        <div class="postcard-top">
+          <div><span class="label plain">Verso</span><h3 style="margin-top:10px">The Directory</h3></div>
+          <div class="postmark">☰</div>
+        </div>
+        <p>An open, worldwide index of universities — name, country, and official website. Unscored and unranked by design. For browsing when you already know roughly where you're looking.</p>
+        <hr class="rule">
+        <div class="postcard-foot"><span>Unscored</span><a class="script" href="#tool">Browse →</a></div>
+      </article>
+      <article class="postcard">
+        <div class="postcard-top">
+          <div><span class="label plain">Marginalia</span><h3 style="margin-top:10px">The Wishlist</h3></div>
+          <div class="postmark">♡</div>
+        </div>
+        <p>Keep anything that catches your eye, from either side of the archive. Saved to this browser alone — no account, no sync, nothing leaving your machine.</p>
+        <hr class="rule">
+        <div class="postcard-foot"><span>Local only</span><a class="script" href="#tool">Open →</a></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ── 6. CTA ──────────────────────────────────────────────── -->
+<section class="cta">
+  <div class="shell">
+    <div class="cta-inner reveal">
+      <span class="label">The archive is open</span>
+      <h2>Find out what your budget<br>is <em>actually</em> worth.</h2>
+      <p>It takes about a minute. No account, no email, no cost — and every figure you see comes with the page it was taken from.</p>
+      <div class="cta-actions">
+        <a class="btn btn-primary" href="#tool">Start matching <span class="arrow">→</span></a>
+        <a class="btn btn-ghost" href="signup.html">Create an account</a>
       </div>
     </div>
   </div>
-</div></nav>
-<section class="hero">
-  <span class="eyebrow">✦ Free & open university search</span>
-  <h1>Find a university that fits your real budget.</h1>
-  <p>Enter what you can spend, what you want to study, and your degree level. UniMatch ranks countries and programs from strongest match to weakest — using only real, source-linked data, never guessed numbers. Want to look beyond that? Browse the full global directory too.</p>
-  <div class="stats"><span class="stat" id="countryStat"></span><span class="stat" id="programStat"></span><span class="stat" id="directoryStat"></span><span class="stat">Official links included</span><span class="stat">No fake rankings, no invented prices</span></div>
 </section>
 
-<div class="tabbar">
-  <button class="tabbtn active" id="tabBtnFinder">Match Finder</button>
-  <button class="tabbtn" id="tabBtnDirectory">Browse All Universities</button>
-  <button class="tabbtn" id="tabBtnWishlist">♡ Wishlist<span class="wishlist-count" id="wishlistCount"></span></button>
-</div>
+<!-- ── 7. The tool ─────────────────────────────────────────── -->
+<section class="tool" id="tool">
+<div class="shell">
 
-<div class="tabpanel active" id="tabFinder">
-<section class="finder" id="finder">
-  <div class="finder-head">
-    <div><h2>Build your study profile</h2><p>Your choices stay in this browser and can be changed anytime.</p></div>
-    <div class="steps"><span class="step active" id="step1">1</span><span class="step" id="step2">2</span><span class="step" id="step3">3</span></div>
+  <div class="section-head" style="margin-bottom:0">
+    <div>
+      <span class="label">The Instrument</span>
+      <h2 style="margin-top:14px">Search the archive.</h2>
+    </div>
+    <p>Your entries stay in this browser and can be changed at any time.</p>
   </div>
 
+  <div class="tabbar">
+    <button class="tabbtn active" id="tabBtnFinder">Match Finder</button>
+    <button class="tabbtn" id="tabBtnDirectory">Directory</button>
+    <button class="tabbtn" id="tabBtnWishlist">Wishlist<span class="wishlist-count" id="wishlistCount"></span></button>
+  </div>
 
-  <form id="profileForm" class="form-grid">
-    <div class="field full"><label>Degree level</label><div class="subjects" id="levelChips"></div></div>
-    <div class="field full"><label for="fieldSelect">Field</label><select id="fieldSelect"></select><div class="hint">Choose a broad field first, then optionally narrow to a specific major below.</div></div>
-    <div class="field full"><label for="majorSelect">Major (optional)</label><select id="majorSelect"></select><div class="hint" id="subjectHint">Loading current coverage…</div></div>
-    <div class="field"><label for="tuition">Maximum tuition per year (€)</label><input id="tuition" type="number" min="0" step="100" value="4500" required><div class="hint">Use the most you are genuinely able to pay each academic year.</div></div>
-    <div class="field"><label for="living">Maximum living cost per month (€)</label><input id="living" type="number" min="0" step="50" value="900" required><div class="hint">Rent, food, transport, utilities, and basic personal spending.</div></div>
-    <div class="field"><label for="language">Teaching language</label><select id="language"><option value="English">English</option><option value="Any">Any language</option></select></div>
-    <div class="field full"><label>Admission preferences</label><div class="toggles">
-      <label class="toggle"><input id="noExam" type="checkbox" checked><span><b>Avoid written entrance exams</b><span>Interviews and document assessment are still allowed.</span></span></label>
-      <label class="toggle"><input id="strictBudget" type="checkbox"><span><b>Strict budget only</b><span>Hide uncertain prices and programs slightly above budget.</span></span></label>
-    </div></div>
-    <div class="form-actions"><button type="button" class="secondary" id="resetProfile">Reset</button><button class="primary" type="submit">Find matching countries →</button></div>
-  </form>
+  <div class="tabpanel active" id="tabFinder">
+  <section class="finder" id="finder">
+    <div class="finder-head">
+      <div><h2>Build your study profile</h2><p>Five fields, one minute. Nothing here is stored anywhere but this browser.</p></div>
+      <div class="steps"><span class="step active" id="step1">1</span><span class="step" id="step2">2</span><span class="step" id="step3">3</span></div>
+    </div>
 
-  <section class="results hidden" id="countryResults">
-    <div class="results-top"><div><h2>Countries matching your profile</h2><p id="resultSummary"></p></div><button class="secondary" id="editProfile">Edit profile</button></div>
-    <div class="summary-strip" id="profileSummary"></div>
-    <div class="country-grid" id="countryGrid"></div>
+    <form id="profileForm" class="form-grid">
+      <div class="field full"><label>Degree level</label><div class="subjects" id="levelChips"></div></div>
+      <div class="field full"><label for="fieldSelect">Field</label><select id="fieldSelect"></select><div class="hint">Choose a broad field first, then optionally narrow to a specific major below.</div></div>
+      <div class="field full"><label for="majorSelect">Major (optional)</label><select id="majorSelect"></select><div class="hint" id="subjectHint">Loading current coverage…</div></div>
+      <div class="field"><label for="tuition">Maximum tuition per year (€)</label><input id="tuition" type="number" min="0" step="100" value="4500" required><div class="hint">Use the most you are genuinely able to pay each academic year.</div></div>
+      <div class="field"><label for="living">Maximum living cost per month (€)</label><input id="living" type="number" min="0" step="50" value="900" required><div class="hint">Rent, food, transport, utilities, and basic personal spending.</div></div>
+      <div class="field"><label for="language">Teaching language</label><select id="language"><option value="English">English</option><option value="Any">Any language</option></select></div>
+      <div class="field full"><label>Admission preferences</label><div class="toggles">
+        <label class="toggle"><input id="noExam" type="checkbox" checked><span><b>Avoid written entrance exams</b><span>Interviews and document assessment are still allowed.</span></span></label>
+        <label class="toggle"><input id="strictBudget" type="checkbox"><span><b>Strict budget only</b><span>Hide uncertain prices and programmes slightly above budget.</span></span></label>
+      </div></div>
+      <div class="form-actions"><button type="button" class="secondary" id="resetProfile">Reset</button><button class="primary" type="submit">Find matching countries →</button></div>
+    </form>
+
+    <section class="results hidden" id="countryResults">
+      <div class="results-top"><div><h2>Countries matching your profile</h2><p id="resultSummary"></p></div><button class="secondary" id="editProfile">Edit profile</button></div>
+      <div class="summary-strip" id="profileSummary"></div>
+      <div class="country-grid" id="countryGrid"></div>
+    </section>
+
+    <section class="university-view hidden" id="universityView">
+      <button class="secondary back" id="backCountries">← Back to countries</button>
+      <div class="country-head"><div><h2 id="countryTitle"></h2><p id="countrySummary"></p></div><div class="sort-note">By match score, then affordability</div></div>
+      <div class="uni-list" id="universityList"></div>
+    </section>
+  </section>
+  </div>
+
+  <div class="tabpanel" id="tabDirectory">
+  <section class="directory">
+    <div class="finder-head">
+      <div><h2>The open directory</h2><p>A raw, searchable index — not scored or ranked, just names and official sites.</p></div>
+    </div>
+    <div class="callout"><b>What this is:</b> an open worldwide university dataset — school name, country, and official website only. It does <b>not</b> include tuition, living costs, majors, or degree levels, so it cannot be filtered by budget. Use it to discover schools by country or name, then check figures directly on each site.</div>
+    <div class="dir-controls">
+      <div class="field"><label for="dirSearch">Search by name</label><input id="dirSearch" placeholder="e.g. Warsaw, Technical, State University…"></div>
+      <div class="field"><label for="dirCountry">Filter by country</label><select id="dirCountry"><option value="">All countries</option></select></div>
+    </div>
+    <div class="dir-meta" id="dirMeta"></div>
+    <div class="dir-grid" id="dirGrid"></div>
+    <div class="dir-pager">
+      <button id="dirPrev">← Prev</button>
+      <span id="dirPageLabel"></span>
+      <button id="dirNext">Next →</button>
+    </div>
+  </section>
+  </div>
+
+  <div class="tabpanel" id="tabWishlist">
+  <section class="directory">
+    <div class="finder-head">
+      <div><h2>Your wishlist</h2><p>Saved programmes and universities — stored only in this browser, never shared anywhere.</p></div>
+    </div>
+    <div class="empty hidden" id="wishlistEmpty" style="margin:24px 34px">Nothing saved yet. Use the ♡ button on any programme in Match Finder, or any listing in the Directory, to keep it here.</div>
+    <div class="uni-list" id="wishlistPrograms" style="padding:10px 34px"></div>
+    <div class="dir-grid" id="wishlistUniversities" style="padding:10px 34px 34px"></div>
+  </section>
+  </div>
+
+  <section class="checklist">
+    <div class="check-head">
+      <div><span class="label">Appendix</span><h2 style="margin-top:12px">Universal application checklist</h2></div>
+      <div><div class="progress"><div id="progressFill"></div></div><div class="hint" id="progressText" style="text-align:right;margin-top:8px">0% complete</div></div>
+    </div>
+    <div class="check-grid" id="checkGrid"></div>
   </section>
 
-  <section class="university-view hidden" id="universityView">
-    <button class="secondary back" id="backCountries">← Back to countries</button>
-    <div class="country-head"><div><h2 id="countryTitle"></h2><p id="countrySummary"></p></div><div class="sort-note">Ordered by personal match score, then affordability</div></div>
-    <div class="uni-list" id="universityList"></div>
-  </section>
-</section>
 </div>
+</section>
 
-<div class="tabpanel" id="tabDirectory">
-<section class="directory">
-  <div class="finder-head">
-    <div><h2>Browse all universities</h2><p>A raw, searchable directory — not scored or ranked, just names and official sites.</p></div>
+<!-- ── 8. Footer ───────────────────────────────────────────── -->
+<footer>
+  <div class="shell">
+    <div class="ornament" style="margin-bottom:38px"><span></span><em>✦ ❧ ✦</em><span></span></div>
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand">Uni<span>Match</span></div>
+        <p class="foot-note" style="margin-top:10px;max-width:34ch">A budget-first university archive for students who read the fine print.</p>
+      </div>
+      <div class="foot-links">
+        <a href="#dossier">The Method</a>
+        <a href="#tool">Match Finder</a>
+        <a href="#tool">Directory</a>
+        <a href="login.html">Log in</a>
+        <a href="signup.html">Sign up</a>
+      </div>
+    </div>
+    <p class="foot-note">Match Finder scores are only ever calculated from programmes UniMatch has personally verified and source-linked — never estimated. The directory is unscored and unverified beyond name, country, and website. University fees, deadlines, admission rules, and visa requirements change constantly. Treat both as a discovery starting point, then confirm every important detail on the official university page before paying anything. “Best match” means best fit for the profile entered, not an official global ranking.</p>
+    <div class="foot-bottom">
+      <span>UniMatch — Free &amp; open university search</span>
+      <span>Saved locally · No account required</span>
+    </div>
   </div>
-  <div class="callout info"><b>What this is:</b> this list comes from an open worldwide university dataset — school name, country, and official website only. It does <b>not</b> include tuition, living costs, majors, or degree levels, so it can't be filtered by budget. Use it to discover schools by country or name, then check tuition and programs directly on each site.</div>
-  <div class="dir-controls">
-    <div class="field"><label for="dirSearch">Search by name</label><input id="dirSearch" placeholder="e.g. Warsaw, Technical, State University…"></div>
-    <div class="field"><label for="dirCountry">Filter by country</label><select id="dirCountry"><option value="">All countries</option></select></div>
-  </div>
-  <div class="dir-meta" id="dirMeta"></div>
-  <div class="dir-grid" id="dirGrid"></div>
-  <div class="dir-pager">
-    <button id="dirPrev">← Prev</button>
-    <span id="dirPageLabel"></span>
-    <button id="dirNext">Next →</button>
-  </div>
-</section>
-</div>
+</footer>
 
-<div class="tabpanel" id="tabWishlist">
-<section class="directory">
-  <div class="finder-head">
-    <div><h2>Your wishlist</h2><p>Saved programs and universities — stored only in this browser, never shared anywhere.</p></div>
-  </div>
-  <div class="empty hidden" id="wishlistEmpty" style="margin:16px 24px">Nothing saved yet. Tap the ♡ button on any program in Match Finder or any listing in Browse Universities to add it here.</div>
-  <div class="uni-list" id="wishlistPrograms" style="padding:6px 24px"></div>
-  <div class="dir-grid" id="wishlistUniversities" style="padding:6px 24px 24px"></div>
-</section>
-</div>
-
-<section class="checklist">
-  <div class="check-head"><div><h2>Universal application checklist</h2><div class="hint">Saved locally in your browser.</div></div><div><div class="progress"><div id="progressFill"></div></div><div class="hint" id="progressText" style="text-align:right;margin-top:5px">0% complete</div></div></div>
-  <div class="check-grid" id="checkGrid"></div>
-</section>
-<div class="ornament" aria-hidden="true"><span></span><em>&#10087;</em><span></span></div>
-</div>
-<footer><div class="shell">Match Finder scores are only ever calculated from programs UniMatch has personally verified and source-linked — never estimated. The Browse directory is unscored and unverified beyond name/country/website. University fees, deadlines, admission rules, and visa requirements change constantly. Treat both tools as a discovery starting point, then verify every important detail on the official university page before paying anything. "Best match" means best fit for the profile entered, not an official global university ranking.</div></footer>
 <script src="verified-data.js"></script>
 <script src="universities-directory.js"></script>
 <script src="app.js"></script>
