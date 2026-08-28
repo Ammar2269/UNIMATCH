@@ -1,5 +1,5 @@
 /* ============================================================
-   UniMatch — vintage European editorial, modern execution
+   Droga — vintage European editorial, modern execution
    Palette: deep green ink #284c45 · cream #f7f1e8 · sage #9fc39e
    ============================================================ */
 
@@ -8,6 +8,7 @@
   --paper:#f7f1e8;--paper-2:#efe5d4;--paper-3:#fffdf7;--paper-4:#e7dbc6;
   /* ink */
   --ink:#284c45;--ink-deep:#1a332e;--sage:#9fc39e;--sage-deep:#7ba67a;
+  --mark:#8bb08a;                      /* compass rose: a tint of the ink, as in the drawn logo */
   /* accent used ON the ink-coloured CTA band. It must contrast with --ink, which
      flips to the light green in dark mode, so it cannot just be --sage. */
   --on-ink-accent:#9fc39e;
@@ -35,6 +36,7 @@ html[data-theme="dark"]{
   --paper:#141f1c;--paper-2:#1a2925;--paper-3:#1e2f2a;--paper-4:#24382f;
   --ink:#9fc39e;--ink-deep:#bcd9ba;--sage:#9fc39e;--sage-deep:#7ba67a;
   --on-ink-accent:#1d3a33;
+  --mark:#9fc39e;
   --text:#ece4d6;--text-soft:#d2cfc2;--muted:#98a89c;--faint:#6f8177;
   --line:rgba(236,228,214,.16);--line-soft:rgba(236,228,214,.09);--line-strong:rgba(236,228,214,.3);
   --panel:#1a2925;--panel-2:#20322c;
@@ -128,13 +130,35 @@ nav{position:relative;display:flex;align-items:center;justify-content:space-betw
 nav.open .nav-toggle span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
 nav.open .nav-toggle span:nth-child(2){opacity:0}
 nav.open .nav-toggle span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+/* ---- wordmark: DR + compass rose + GA ----
+   The letters are real text so they stay crisp and pick up the theme colour;
+   only the rose is drawn. */
 .brand{
-  font-family:var(--serif);font-size:26px;font-weight:600;letter-spacing:-.01em;
-  text-decoration:none;color:var(--text);display:inline-flex;align-items:baseline;gap:1px;
+  position:relative;font-family:var(--serif);font-size:25px;font-weight:600;
+  letter-spacing:.15em;text-decoration:none;color:var(--text);
+  display:inline-flex;align-items:center;line-height:1;
 }
-.brand span{color:var(--ink);font-style:italic}
-.brand::after{content:'✦';font-size:9px;margin-left:7px;color:var(--sage-deep);transform:translateY(-9px);transition:transform .35s ease}
-.brand:hover::after{transform:translateY(-9px) rotate(90deg)}
+.brand-text{display:inline-block}
+.brand-mark{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:1.5em;height:1.5em;margin:0 -.12em 0 -.1em;flex-shrink:0;
+  color:var(--mark);
+  transition:transform .6s cubic-bezier(.22,.61,.36,1);
+}
+.brand-mark svg{width:100%;height:100%;display:block;overflow:visible}
+.brand:hover .brand-mark{transform:rotate(45deg)}
+/* the rule the wordmark sits on, as in the drawn logo */
+.brand::before{
+  content:'';position:absolute;left:-5%;right:-5%;top:50%;height:1px;
+  background:var(--mark);opacity:.32;pointer-events:none;
+}
+.brand-mark .ns{display:none}
+.brand-full .brand-mark .ns{display:block}
+.brand-full .brand-mark .ns text{
+  font-family:var(--sans);font-size:17px;font-weight:600;letter-spacing:.04em;
+  fill:var(--mark);opacity:.85;
+}
+.brand-full .brand-mark .ns text.south{fill:var(--sage-deep)}
 .nav-right{display:flex;align-items:center;gap:8px}
 .nav-link{
   font-size:13px;font-weight:500;letter-spacing:.02em;text-decoration:none;
@@ -473,8 +497,10 @@ input::placeholder{color:var(--faint)}
 
 footer{border-top:1px solid var(--line);padding:clamp(48px,6vw,72px) 0 clamp(36px,4vw,52px)}
 .foot-top{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap;align-items:flex-start;margin-bottom:36px}
-.foot-brand{font-family:var(--serif);font-size:24px}
-.foot-brand span{color:var(--ink);font-style:italic}
+/* the footer carries the full lockup, big enough for the N/S bearings to read */
+.foot-brand{font-size:40px;margin-bottom:10px}
+.foot-brand.brand::before{left:0;right:0}
+.foot-brand:hover .brand-mark{transform:none}
 .foot-links{display:flex;gap:26px;flex-wrap:wrap}
 .foot-links a{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .22s ease}
 .foot-links a:hover{color:var(--text)}
