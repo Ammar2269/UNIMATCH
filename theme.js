@@ -1,3 +1,52 @@
+/* ---------------- Mobile nav drawer ----------------
+   The button is injected rather than written into all four pages, and it is
+   display:none above the mobile breakpoint, so desktop is untouched. */
+
+(function initNavDrawer(){
+  const nav=document.querySelector('nav');
+  const right=nav&&nav.querySelector('.nav-right');
+  if(!nav||!right)return;
+
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.className='nav-toggle';
+  btn.setAttribute('aria-label','Menu');
+  btn.setAttribute('aria-expanded','false');
+  btn.innerHTML='<span></span><span></span><span></span>';
+  nav.appendChild(btn);
+
+  const setOpen=(on)=>{
+    nav.classList.toggle('open',on);
+    btn.setAttribute('aria-expanded',on?'true':'false');
+  };
+
+  btn.addEventListener('click',e=>{e.stopPropagation();setOpen(!nav.classList.contains('open'));});
+  // a tapped link should close the drawer behind it
+  right.addEventListener('click',e=>{if(e.target.closest('a'))setOpen(false);});
+  document.addEventListener('click',e=>{if(!nav.contains(e.target))setOpen(false);});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false);});
+  // leaving the mobile breakpoint must not strand the drawer open
+  window.matchMedia('(min-width:721px)').addEventListener('change',ev=>{if(ev.matches)setOpen(false);});
+})();
+
+/* ---------------- Coverage hint: tap to expand on small screens ----------------
+   The clamp itself is CSS and only applies at the mobile breakpoint, so this
+   listener is inert on desktop. */
+
+(function initHintToggle(){
+  const hint=document.getElementById('subjectHint');
+  if(!hint)return;
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.className='hint-toggle';
+  btn.textContent='Show the full list';
+  hint.insertAdjacentElement('afterend',btn);
+  btn.addEventListener('click',()=>{
+    const open=hint.classList.toggle('expanded');
+    btn.textContent=open?'Show less':'Show the full list';
+  });
+})();
+
 /* ---------------- Sign out ---------------- */
 
 (function initSignOut(){

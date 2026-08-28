@@ -121,7 +121,13 @@ html.no-motion .reveal{opacity:1;transform:none;transition:none}
 /* ---------------- navigation ---------------- */
 
 .nav-wrap{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-soft)}
-nav{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px 0}
+nav{position:relative;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px 0}
+/* hamburger: only ever shown at the mobile breakpoint */
+.nav-toggle{display:none;flex-direction:column;justify-content:center;gap:5px;width:44px;height:44px;margin-right:-10px;padding:0 10px}
+.nav-toggle span{display:block;height:1.5px;background:var(--text);border-radius:2px;transition:transform .3s cubic-bezier(.22,.61,.36,1),opacity .2s ease}
+nav.open .nav-toggle span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+nav.open .nav-toggle span:nth-child(2){opacity:0}
+nav.open .nav-toggle span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 .brand{
   font-family:var(--serif);font-size:26px;font-weight:600;letter-spacing:-.01em;
   text-decoration:none;color:var(--text);display:inline-flex;align-items:baseline;gap:1px;
@@ -340,6 +346,8 @@ html.no-motion .tabpanel.active{animation:none}
 .field.full{grid-column:1/-1}
 .field label{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .hint{color:var(--faint);font-size:12.5px;line-height:1.55}
+/* only surfaced at the mobile breakpoint, where the coverage list is folded */
+.hint-toggle{display:none}
 input,select{
   width:100%;background:var(--input-bg);color:var(--text);
   border:0;border-bottom:1px solid var(--field-line);border-radius:0;
@@ -610,41 +618,143 @@ html.no-motion .account-prompt.open{animation:none}
 }
 @media(max-width:720px){
   .shell,.shell-narrow{width:calc(100% - 32px)}
-  nav{padding:16px 0}
-  .nav-link{display:none}
+
+  /* ---- navigation becomes a drawer ---- */
+  nav{padding:14px 0}
+  .nav-toggle{display:flex}
+  .nav-right{
+    position:absolute;top:calc(100% + 1px);left:-16px;right:-16px;z-index:30;
+    display:none;flex-direction:column;align-items:stretch;gap:2px;
+    padding:12px 16px 16px;background:var(--panel);
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow-lift);
+  }
+  nav.open .nav-right{display:flex}
+  .nav-link{display:block;padding:14px 12px;font-size:15.5px;border-radius:10px}
+  .nav-cta{margin-top:8px;padding:15px 20px;font-size:12.5px;text-align:center}
+  .nav-account{justify-content:space-between;padding:12px;font-size:14px;border-top:1px solid var(--line-soft);margin-top:8px}
+  .nav-signout{padding:10px 14px}
+  .settings-wrap{margin-top:8px}
+  .theme-toggle{width:100%;justify-content:center;padding:14px}
+  .settings-panel{position:static;box-shadow:none;margin-top:8px;min-width:0;background:var(--panel-2)}
+  .theme-option{padding:13px 12px}
   .brand{font-size:22px}
-  h1{font-size:clamp(42px,12vw,64px)}
+
+  /* ---- headings: let them wrap naturally instead of at the desktop break ---- */
+  h1{font-size:clamp(34px,9.6vw,64px)}
+  h2{font-size:clamp(25px,7.2vw,44px)}
+  h3{font-size:clamp(19px,5.2vw,26px)}
+  .hero h1 br,.cta h2 br,.section-head h2 br,.quiz-hero h1 br{display:none}
+  h1,h2,h3,h4,.dir-card h4,.uni-card h3,.country-card h3{overflow-wrap:anywhere}
+  .quiz-hero h1{font-size:clamp(34px,9.6vw,64px)}
+  .country-head h2{font-size:clamp(26px,7.4vw,40px)}
+  .quiz-result-card h3{font-size:clamp(26px,7.4vw,40px)}
+  .hero-meta{gap:14px 26px}
+  .hero-meta span{font-size:11px}
+
+  /* ---- primary actions go full width so they are easy to hit ---- */
+  .hero-actions,.cta-actions,.quiz-result-actions{flex-direction:column;align-items:stretch}
+  .hero-actions .btn,.cta-actions .btn,.quiz-result-actions .btn{width:100%;padding:16px 20px}
+  .quiz-intro .btn{width:100%;padding:16px 20px}
+
   .ed-item,.ed-item.wide{grid-column:span 12}
+  .ed-item{padding:26px 22px 28px}
   .plate-grid{grid-template-columns:1fr;gap:18px}
+  .plate-caption{flex-direction:column;gap:5px;padding:12px 14px;font-size:10px}
   .figures-row{grid-template-columns:1fr}
+  .figure{padding:30px 20px}
   .figure::before{display:none!important}
   .figure+.figure{border-top:1px solid var(--line)}
   .figure:nth-child(-n+2){border-bottom:0}
+
+  /* ---- forms: 16px stops iOS Safari zooming in on focus ---- */
+  input,select{font-size:16px;padding:14px 2px}
+  select{text-overflow:ellipsis;padding-right:22px}
+  /* the coverage list runs to a couple of screens on a phone, so it is folded
+     down to a few lines and opens on tap */
+  #subjectHint{
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  #subjectHint.expanded{display:block;-webkit-line-clamp:none;overflow:visible}
+  .hint-toggle{
+    display:block;align-self:flex-start;text-align:left;margin-top:6px;padding:6px 0;
+    font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--ink);
+    border-bottom:1px solid color-mix(in srgb,var(--ink) 40%,transparent);
+  }
   .form-grid{grid-template-columns:1fr;padding:24px 20px 28px}
   .field.full,.form-actions{grid-column:auto}
   .toggles{grid-template-columns:1fr}
+  .toggle{padding:14px}
+  .toggle input{width:20px;height:20px}
+  .chip{padding:11px 16px;font-size:13.5px}
+  .checkitem input{width:19px;height:19px}
+  .checkitem{margin:13px 0}
   .finder-head{padding:26px 20px 20px}
   .callout{margin:20px 20px 0}
   .results,.university-view{padding:0 20px 26px}
   .dir-controls{grid-template-columns:1fr;padding:24px 20px}
   .dir-meta,.dir-grid,.dir-pager{padding-left:20px;padding-right:20px}
+  .dir-pager{gap:10px;flex-wrap:wrap}
+  .dir-pager button{padding:12px 16px}
   .uni-top{flex-direction:column;gap:12px}
+  /* the rank + save pair is inline-styled as a column; side by side reads better
+     once the card itself has stacked */
+  .uni-top>div:last-child{flex-direction:row!important;align-items:center!important;gap:10px!important}
+  .uni-card{padding:20px 18px}
+  .country-card{padding:18px}
   .form-actions{justify-content:stretch}
-  .form-actions button{flex:1}
-  .tabbar{gap:20px;overflow-x:auto;scrollbar-width:none}
+  .form-actions button{flex:1;padding:15px 16px}
+  .primary,.secondary{padding:15px 18px}
+  .wish-btn{padding:10px 15px}
+  .sort-note{padding:10px 14px}
+  .links a{padding-bottom:4px}
+  .tabbar{gap:18px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
   .tabbar::-webkit-scrollbar{display:none}
-  .tabbtn{white-space:nowrap;font-size:12px}
+  .tabbtn{white-space:nowrap;font-size:12px;padding:15px 2px}
+  .check-grid{grid-template-columns:1fr}
+  .check-head{gap:16px}
+  .progress{width:100%}
+
   .top-banner{flex-direction:column;gap:8px;padding:11px 18px;font-size:12px}
-  .back-to-top{bottom:18px;right:18px;width:40px;height:40px}
+  .top-banner button{align-self:flex-end;margin-top:-24px;padding:6px 2px}
+  .back-to-top{bottom:18px;right:18px;width:44px;height:44px}
   .stamp{width:74px;height:74px;font-size:7px;top:12px;right:12px}
   .cta::before{inset:10px}
-  .nav-account{font-size:12px;gap:8px}
+
+  .account-prompt{padding:18px}
   .account-prompt-card{padding:30px 22px 24px}
-  .account-prompt-actions .btn{width:100%}
+  .account-prompt-actions{flex-direction:column}
+  .account-prompt-actions .btn{width:100%;padding:15px 20px}
+
   .quiz-card{padding:24px 18px}
-  .quiz-option{padding:15px 15px;font-size:14.5px;gap:12px}
+  .quiz-option{padding:15px 14px;font-size:14.5px;gap:12px}
   .quiz-option:hover{transform:none}
+  .quiz-progress{gap:12px;margin-bottom:24px}
+  .quiz-counter{font-size:9.5px;letter-spacing:.12em}
+  .quiz-question{font-size:clamp(20px,5.6vw,26px);margin-bottom:22px}
   .quiz-unis-grid{grid-template-columns:1fr}
+  .quiz-back{padding:12px 2px}
+
+  .foot-top{gap:26px}
+  .foot-links{gap:14px 20px}
+  .foot-bottom{gap:8px}
+  .auth-card{padding:32px 22px 26px}
+}
+
+/* very small handsets */
+@media(max-width:400px){
+  .shell,.shell-narrow{width:calc(100% - 24px)}
+  .nav-right{left:-12px;right:-12px}
+  h1{font-size:clamp(30px,9.2vw,44px)}
+  h2{font-size:clamp(23px,7vw,32px)}
+  .brand{font-size:20px}
+  .figure b{font-size:clamp(38px,13vw,52px)}
+  .quiz-stamp{width:74px;height:74px}
+  .quiz-stamp span{font-size:23px}
+  .ed-item{padding:24px 18px 26px}
+  .finder-head,.form-grid,.results,.university-view,.dir-controls{padding-left:16px;padding-right:16px}
+  .dir-meta,.dir-grid,.dir-pager{padding-left:16px;padding-right:16px}
+  .callout{margin:18px 16px 0}
 }
 
 @media(prefers-reduced-motion:reduce){
