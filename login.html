@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log in — UniMatch</title>
+<script>
+(function(){
+  try{
+    var saved=localStorage.getItem('unimatchTheme');
+    var theme=saved||(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  }catch(e){}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell">
+<nav><a class="brand" href="index.html">Uni<span>Match</span></a><div class="nav-right">
+  <a class="nav-link" href="signup.html">Need an account?</a>
+  <div class="settings-wrap">
+    <button class="theme-toggle" id="settingsToggle" type="button" aria-label="Open settings" aria-expanded="false"><span aria-hidden="true">⚙</span><span>Settings</span></button>
+    <div class="settings-panel hidden" id="settingsPanel">
+      <div class="settings-title">Theme</div>
+      <div class="theme-options">
+        <button type="button" class="theme-option" data-theme-choice="light"><span class="theme-swatch swatch-light"></span>Light</button>
+        <button type="button" class="theme-option" data-theme-choice="dark"><span class="theme-swatch swatch-dark"></span>Dark</button>
+      </div>
+    </div>
+  </div>
+</div></nav>
+
+<section class="auth-wrap">
+  <form class="auth-card" id="loginForm">
+    <h2>Log in</h2>
+    <p class="hint">Welcome back. Enter your details to continue.</p>
+    <div class="field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="email" required placeholder="you@example.com"></div>
+    <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" required placeholder="••••••••"></div>
+    <button class="primary" type="submit">Log in →</button>
+    <p class="auth-note" id="loginNote">Accounts aren't set up yet — this page is a preview of the sign-in flow. Your search profile and wishlist already save locally in this browser without needing one.</p>
+    <p class="auth-switch">New here? <a href="signup.html">Create an account</a></p>
+  </form>
+</section>
+</div>
+<script src="theme.js"></script>
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  document.getElementById('loginNote').textContent = "Accounts aren't set up yet, so there's nothing to log in to — but this is exactly how it'll work once they are.";
+});
+</script>
+</body>
+</html>
