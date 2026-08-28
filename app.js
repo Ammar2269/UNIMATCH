@@ -177,6 +177,11 @@ function examPenalty(p,noExam){
   return 0;
 }
 function fieldBadge(score){return score>=82?'good':score>=58?'warn':'bad'}
+/* A record counts as verified only if it actually carries source links. Derived at
+   runtime rather than stored, so the label can never drift from the data. */
+function isSourced(p){return Array.isArray(p.sources)&&p.sources.length>0}
+function sourcedCount(){return Object.values(DATA.programs).flat().filter(isSourced).length}
+function unsourcedCount(){return Object.values(DATA.programs).flat().filter(p=>!isSourced(p)).length}
 function priceStatus(range,budget,strict){
   if(!range.known)return strict?'fail':'uncertain';
   if(range.min<=budget)return range.max<=budget?'fit':'possible';
@@ -199,10 +204,14 @@ function evaluateProgram(p,country,profile){
   if(lStatus==='fit')reasons.push('Living cost fits'); else if(lStatus==='possible'){score-=6;reasons.push('Living range partly fits');} else if(lStatus==='stretch'){score-=12;reasons.push('Living cost slightly above budget');} else if(lStatus==='uncertain'){score-=10;reasons.push('Living cost needs confirmation');} else {score-=30;reasons.push('Living cost above budget');}
   const ep=examPenalty(p,profile.noExam); score-=ep; if(ep>=20)reasons.push('Written exam conflicts with preference'); else if(ep)reasons.push('Exam status needs confirmation'); else if(profile.noExam)reasons.push('No clear written-exam conflict');
   const fit=text(p.fit); if(fit.includes('excellent'))score+=5; if(fit.includes('too expensive')||fit.includes('bad'))score-=8;
+  const sourced=isSourced(p);
+  if(!sourced){score-=10;reasons.push('Unverified record — no official source link');}
   score=Math.max(0,Math.min(100,Math.round(score)));
-  const eligible=field&&level&&language&&['fit','possible'].includes(tStatus)&&['fit','possible'].includes(lStatus)&&ep===0;
-  const possible=field&&level&&language&&score>=42;
-  return {...p,country:country.name,flag:country.flag,score,reasons,eligible,possible,tStatus,lStatus,tuitionRange:tuition,livingRange:living,level:inferLevel(p)};
+  /* Strict mode is a promise about certainty, so it also drops records we cannot
+     trace back to an official page. */
+  const eligible=field&&level&&language&&sourced&&['fit','possible'].includes(tStatus)&&['fit','possible'].includes(lStatus)&&ep===0;
+  const possible=field&&level&&language&&score>=42&&(sourced||!profile.strict);
+  return {...p,country:country.name,flag:country.flag,score,reasons,eligible,possible,sourced,tStatus,lStatus,tuitionRange:tuition,livingRange:living,level:inferLevel(p)};
 }
 function getAllEvaluated(profile){
   const all=[];
@@ -280,7 +289,7 @@ function showCountry(name){
   const list=document.getElementById('universityList');
   list.innerHTML=match.programs.map((p,i)=>{
     const cls=fieldBadge(p.score); const strongest=p.reasons.filter(r=>!r.includes('Different')&&!r.includes('above')&&!r.includes('conflicts')).slice(0,3).join(' · ');
-    return `<article class="uni-card"><div class="uni-top"><div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px"><span class="badge ${cls}">${p.score}% match</span><span class="badge">${p.level}</span></div><h3>${p.university}</h3><div class="program-name">${p.program}</div></div><div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end"><span class="uni-rank">#${i+1} best fit</span><button type="button" class="wish-btn" data-wish-idx="${i}">♡ Save</button></div></div><div class="reason"><b>Why it ranks here:</b> ${strongest||p.reasons.slice(0,3).join(' · ')}.</div><div class="meta-grid"><div class="meta"><b>City</b><span>${p.city}</span></div><div class="meta"><b>Field</b><span>${p.field}</span></div><div class="meta"><b>Language</b><span>${p.language}</span></div><div class="meta"><b>Tuition</b><span>${p.tuition}</span></div><div class="meta"><b>Living cost</b><span>${p.living}</span></div><div class="meta"><b>Deadline</b><span>${p.deadline}</span></div><div class="meta"><b>Admission / exam</b><span>${p.exam}</span></div><div class="meta"><b>Original fit note</b><span>${p.fit}</span></div></div><div class="notes">${p.notes}</div><div class="links">${(p.sources||[]).map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]} ↗</a>`).join('')}</div></article>`;
+    return `<article class="uni-card"><div class="uni-top"><div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px"><span class="badge ${cls}">${p.score}% match</span><span class="badge">${p.level}</span>${p.sourced?'<span class="badge good">✓ Source-linked</span>':'<span class="badge warn">Unverified record</span>'}</div><h3>${p.university}</h3><div class="program-name">${p.program}</div></div><div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end"><span class="uni-rank">#${i+1} best fit</span><button type="button" class="wish-btn" data-wish-idx="${i}">♡ Save</button></div></div><div class="reason"><b>Why it ranks here:</b> ${strongest||p.reasons.slice(0,3).join(' · ')}.</div><div class="meta-grid"><div class="meta"><b>City</b><span>${p.city}</span></div><div class="meta"><b>Field</b><span>${p.field}</span></div><div class="meta"><b>Language</b><span>${p.language}</span></div><div class="meta"><b>Tuition</b><span>${p.tuition}</span></div><div class="meta"><b>Living cost</b><span>${p.living}</span></div><div class="meta"><b>Deadline</b><span>${p.deadline}</span></div><div class="meta"><b>Admission / exam</b><span>${p.exam}</span></div><div class="meta"><b>Original fit note</b><span>${p.fit}</span></div></div><div class="notes">${p.notes}</div>${p.sourced?`<div class="links">${p.sources.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]} ↗</a>`).join('')}</div>`:'<div class="unverified-note"><b>No official source on file.</b> These figures came from a bulk dataset and have not been checked against the university\'s own pages. Treat them as a lead to investigate, not as confirmed prices — verify everything on the official site before acting on it.</div>'}</article>`;
   }).join('');
   list.querySelectorAll('[data-wish-idx]').forEach(btn=>{
     const p=match.programs[Number(btn.dataset.wishIdx)];
@@ -304,7 +313,8 @@ document.getElementById('editProfile').onclick=()=>{document.getElementById('cou
 document.getElementById('backCountries').onclick=renderCountryResults;
 document.getElementById('resetProfile').onclick=resetForm;
 document.getElementById('countryStat').textContent=DATA.countries.length.toLocaleString();
-document.getElementById('programStat').textContent=Object.values(DATA.programs).flat().length.toLocaleString();
+document.getElementById('programStat').textContent=sourcedCount().toLocaleString();
+(function(){const el=document.getElementById('unverifiedStat');if(el)el.textContent=unsourcedCount().toLocaleString();})();
 document.getElementById('directoryStat').textContent=DIRECTORY.length.toLocaleString();
 renderFieldSelect();renderLevelChips();renderMajorSelect();renderChecklist();renderCoverageSummary();
 
@@ -442,10 +452,9 @@ updateWishlistCount();
   const banner=document.getElementById('topBanner');
   if(!banner)return;
   if(localStorage.getItem('unimatchBannerDismissed')==='1'){ banner.classList.add('hidden'); return; }
-  const totalPrograms=Object.values(DATA.programs).flat().length;
   const totalCountries=DATA.countries.filter(c=>(DATA.programs[c.name]||[]).length).length;
   const textEl=document.getElementById('topBannerText');
-  if(textEl)textEl.innerHTML=`✦ <b>${totalPrograms.toLocaleString()}</b> verified programs across <b>${totalCountries}</b> countries — real tuition, real sources, never guessed. Browse ${DIRECTORY.length.toLocaleString()} more in the directory.`;
+  if(textEl)textEl.innerHTML=`✦ <b>${sourcedCount().toLocaleString()}</b> source-linked programmes across <b>${totalCountries}</b> countries, plus <b>${unsourcedCount().toLocaleString()}</b> unverified records clearly marked as such. Browse ${DIRECTORY.length.toLocaleString()} universities in the directory.`;
   const closeBtn=document.getElementById('topBannerClose');
   if(closeBtn)closeBtn.onclick=()=>{banner.classList.add('hidden'); try{localStorage.setItem('unimatchBannerDismissed','1');}catch(e){}};
 })();
