@@ -1,22 +1,6 @@
 const DATA = window.VERIFIED_DATA;
-/* The directory is ~1.5 MB and only the Browse tab needs it, so it is fetched on
-   demand. Until then DIRECTORY is empty and the headline count comes from
-   directory-meta.js, which is a few bytes. */
-let DIRECTORY = window.UNIVERSITY_DIRECTORY || []; // [country, name, url][]
-const DIRECTORY_TOTAL = window.DIRECTORY_COUNT ?? DIRECTORY.length;
-let directoryLoader = null;
-function loadDirectory(){
-  if(window.UNIVERSITY_DIRECTORY){DIRECTORY=window.UNIVERSITY_DIRECTORY;return Promise.resolve(DIRECTORY);}
-  if(directoryLoader)return directoryLoader;
-  directoryLoader=new Promise((resolve,reject)=>{
-    const s=document.createElement('script');
-    s.src='universities-directory.js';
-    s.onload=()=>{DIRECTORY=window.UNIVERSITY_DIRECTORY||[];resolve(DIRECTORY);};
-    s.onerror=()=>{directoryLoader=null;reject(new Error('Could not load the university directory.'));};
-    document.head.appendChild(s);
-  });
-  return directoryLoader;
-}
+/* DIRECTORY, DIRECTORY_TOTAL, loadDirectory(), escapeHtml() and escapeAttr()
+   live in directory-loader.js, which the quiz page shares. */
 
 /* A broad major taxonomy with keyword synonyms, used for BOTH scoring matches and
    deciding which subject chips to show. This list is intentionally much bigger than
@@ -438,8 +422,6 @@ function renderDirectoryPage(){
   document.getElementById('dirPrev').disabled=clampedPage<=0;
   document.getElementById('dirNext').disabled=clampedPage>=pages-1;
 }
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function escapeAttr(s){return escapeHtml(s);}
 
 /* ---------------- Wishlist (saved programs & universities, localStorage only) ---------------- */
 

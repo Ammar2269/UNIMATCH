@@ -36,10 +36,8 @@
     <nav>
       <a class="brand" href="index.html">Uni<span>Match</span></a>
       <div class="nav-right">
-        <a class="nav-link" href="#dossier">The Method</a>
         <a class="nav-link" href="#tool">Find a University</a>
-        <a class="nav-link" href="#quiz">Quiz</a>
-        <a class="nav-link" href="#plates">Plates</a>
+        <a class="nav-link" href="quiz.html">Quiz</a>
         <a class="nav-link" href="login.html" data-when-signed-out>Log in</a>
         <a class="nav-cta" href="signup.html" data-when-signed-out>Sign up</a>
         <span class="nav-account hidden" data-when-signed-in><span id="accountName"></span><button type="button" class="nav-signout" id="signOutBtn">Sign out</button></span>
@@ -250,39 +248,7 @@
 </div>
 </section>
 
-<!-- ── 6. The Quiz (just for fun) ────────────────────────── -->
-<section class="section quiz-section" id="quiz">
-  <div class="shell-narrow">
-    <div class="section-head reveal" style="justify-content:center;text-align:center">
-      <div>
-        <span class="label">Diversion</span>
-        <h2 style="margin-top:14px">Where in the world<br>do you belong?</h2>
-      </div>
-    </div>
-
-    <div class="quiz-card reveal">
-      <div id="quizIntro" class="quiz-intro">
-        <p>Ten questions, no budgets, no entry requirements — just what kind of place feels like yours. Nothing is saved and nothing is scored against real data.</p>
-        <button type="button" class="btn btn-primary" id="quizStart">Start the quiz <span class="arrow">&#8594;</span></button>
-      </div>
-
-      <div id="quizProgress" class="quiz-progress hidden">
-        <div class="quiz-bar-track"><div class="quiz-bar" id="quizBar"></div></div>
-        <span class="quiz-counter" id="quizCounter"></span>
-      </div>
-
-      <div id="quizStage" class="quiz-stage hidden">
-        <h3 class="quiz-question" id="quizQuestion" tabindex="-1"></h3>
-        <div class="quiz-options" id="quizOptions"></div>
-        <button type="button" class="quiz-back hidden" id="quizBack">&#8592; Previous question</button>
-      </div>
-
-      <div id="quizResult" class="hidden"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ── 7. The Plates ─────────────────────────────────────── -->
+<!-- ── 6. The Plates ─────────────────────────────────────── -->
 <section class="section plates" id="plates">
   <div class="shell">
     <div class="section-head reveal">
@@ -323,7 +289,7 @@
   </div>
 </section>
 
-<!-- ── 8. Footer ─────────────────────────────────────────── -->
+<!-- ── 7. Footer ─────────────────────────────────────────── -->
 <footer>
   <div class="shell">
     <div class="ornament" style="margin-bottom:38px"><span></span><em>✦ ❧ ✦</em><span></span></div>
@@ -337,6 +303,7 @@
         <a href="#tool">Match Finder</a>
         <a href="#tool">Directory</a>
         <a href="#plates">Plates</a>
+        <a href="quiz.html">Quiz</a>
         <a href="login.html">Log in</a>
         <a href="signup.html">Sign up</a>
       </div>
@@ -352,9 +319,8 @@
 <script src="verified-data.js"></script>
 <script src="account.js"></script>
 <script src="directory-meta.js"></script>
+<script src="directory-loader.js"></script>
 <script src="app.js"></script>
-<script src="quiz.js"></script>
-<script src="quiz-ui.js"></script>
 <script src="theme.js"></script>
 </body>
 </html>

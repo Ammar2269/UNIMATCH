@@ -8,6 +8,9 @@
   --paper:#f7f1e8;--paper-2:#efe5d4;--paper-3:#fffdf7;--paper-4:#e7dbc6;
   /* ink */
   --ink:#284c45;--ink-deep:#1a332e;--sage:#9fc39e;--sage-deep:#7ba67a;
+  /* accent used ON the ink-coloured CTA band. It must contrast with --ink, which
+     flips to the light green in dark mode, so it cannot just be --sage. */
+  --on-ink-accent:#9fc39e;
   /* text */
   --text:#1e332d;--text-soft:#3a4f47;--muted:#6f8177;--faint:#9aa89f;
   /* structure */
@@ -31,6 +34,7 @@
 html[data-theme="dark"]{
   --paper:#141f1c;--paper-2:#1a2925;--paper-3:#1e2f2a;--paper-4:#24382f;
   --ink:#9fc39e;--ink-deep:#bcd9ba;--sage:#9fc39e;--sage-deep:#7ba67a;
+  --on-ink-accent:#1d3a33;
   --text:#ece4d6;--text-soft:#d2cfc2;--muted:#98a89c;--faint:#6f8177;
   --line:rgba(236,228,214,.16);--line-soft:rgba(236,228,214,.09);--line-strong:rgba(236,228,214,.3);
   --panel:#1a2925;--panel-2:#20322c;
@@ -291,9 +295,9 @@ html[data-theme="dark"] .plate:hover .plate-img img{filter:sepia(.1) saturate(.9
 .cta::before{content:'';position:absolute;inset:14px;border:1px solid color-mix(in srgb,var(--on-ink) 26%,transparent);pointer-events:none}
 .cta-inner{text-align:center;max-width:760px;margin:0 auto;position:relative;z-index:2}
 .cta .label{color:color-mix(in srgb,var(--on-ink) 68%,transparent)}
-.cta .label::before{color:var(--sage)}
+.cta .label::before{color:var(--on-ink-accent)}
 .cta h2{margin:22px 0 18px;color:var(--on-ink)}
-.cta h2 em{font-style:italic;color:var(--sage)}
+.cta h2 em{font-style:italic;color:var(--on-ink-accent)}
 .cta p{margin:0 auto 34px;max-width:52ch;color:color-mix(in srgb,var(--on-ink) 76%,transparent);font-size:16px;line-height:1.72}
 .cta .btn-primary{background:var(--on-ink);color:var(--ink)}
 .cta .btn-primary:hover{box-shadow:0 14px 34px -12px rgba(0,0,0,.6)}
@@ -530,7 +534,14 @@ html.no-motion .account-prompt.open{animation:none}
 
 /* ---------------- quiz ---------------- */
 
-.quiz-section{padding-top:0}
+.quiz-hero{padding:clamp(56px,8vw,104px) 0 clamp(28px,4vw,44px);text-align:center}
+.quiz-hero h1{font-size:clamp(38px,6.4vw,86px);line-height:1.02;margin:22px 0 20px}
+.quiz-hero-lede{margin:0 auto;max-width:54ch;color:var(--muted);font-size:clamp(15px,1.3vw,17px);line-height:1.72}
+.quiz-section{padding:0 0 clamp(64px,8vw,110px)}
+.quiz-ornament{margin:44px 0 26px}
+.quiz-footnote{margin:0;text-align:center;font-size:13.5px;line-height:1.75;color:var(--muted)}
+.quiz-footnote a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--ink) 40%,transparent)}
+.quiz-footnote a:hover{border-bottom-color:var(--ink)}
 .quiz-card{
   background:var(--panel);border:1px solid var(--line);border-radius:16px;
   box-shadow:var(--shadow);padding:clamp(28px,4vw,44px);
@@ -559,12 +570,22 @@ html.no-motion .account-prompt.open{animation:none}
 }
 .quiz-back:hover{color:var(--text)}
 .quiz-result-card{text-align:center}
-.quiz-flag{font-size:56px;line-height:1;margin:18px 0 10px}
+.quiz-stamp{
+  width:84px;height:84px;margin:22px auto 16px;border-radius:50%;
+  border:2px double var(--ink);display:grid;place-items:center;
+  transform:rotate(-7deg);
+}
+.quiz-stamp span{
+  font-family:var(--serif);font-size:27px;font-weight:600;letter-spacing:.06em;
+  color:var(--ink);line-height:1;
+}
+.quiz-alts span{display:inline-block}
 .quiz-result-card h3{font-size:clamp(30px,4vw,44px);margin:0 0 8px}
 .quiz-cities{margin:0 0 20px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
 .quiz-blurb{margin:0 auto;max-width:54ch;color:var(--text-soft);font-size:15.5px;line-height:1.75}
 .quiz-alts{margin-top:24px;font-size:12px;letter-spacing:.06em;color:var(--faint)}
-.quiz-alts span{margin-left:10px;white-space:nowrap}
+.quiz-alts span{margin-left:8px;white-space:nowrap}
+.quiz-alts span+span::before{content:'·';margin-right:10px;opacity:.6}
 .quiz-result-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px}
 .quiz-unis{margin-top:32px;padding-top:26px;border-top:1px solid var(--line);text-align:left}
 .quiz-unis-head{margin-bottom:16px}
@@ -574,6 +595,8 @@ html.no-motion .account-prompt.open{animation:none}
   margin:30px auto 0;max-width:56ch;padding-top:20px;border-top:1px solid var(--line-soft);
   font-size:11.5px;line-height:1.7;color:var(--faint);
 }
+.quiz-disclaimer a{color:var(--muted);border-bottom:1px solid var(--line-strong);text-decoration:none}
+.quiz-disclaimer a:hover{color:var(--text)}
 
 /* ---------------- responsive ---------------- */
 

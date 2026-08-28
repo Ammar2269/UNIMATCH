@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A ten-question quiz that suggests the kind of country you'd feel at home studying in — then shows you the universities there.">
+<title>Where in the World Do You Belong? — UniMatch</title>
+<script>
+(function(){
+  try{
+    var saved=localStorage.getItem('unimatchTheme');
+    var theme=saved||(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  }catch(e){}
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.documentElement.classList.add('no-motion');
+  }
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600;1,700&family=Archivo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<button type="button" id="backToTop" class="back-to-top hidden" aria-label="Back to top">↑</button>
+
+<div class="nav-wrap">
+  <div class="shell">
+    <nav>
+      <a class="brand" href="index.html">Uni<span>Match</span></a>
+      <div class="nav-right">
+        <a class="nav-link" href="index.html#tool">Find a University</a>
+        <a class="nav-link" href="login.html" data-when-signed-out>Log in</a>
+        <a class="nav-cta" href="signup.html" data-when-signed-out>Sign up</a>
+        <span class="nav-account hidden" data-when-signed-in><span id="accountName"></span><button type="button" class="nav-signout" id="signOutBtn">Sign out</button></span>
+        <div class="settings-wrap">
+          <button class="theme-toggle" id="settingsToggle" type="button" aria-label="Open settings" aria-expanded="false"><span aria-hidden="true">✦</span><span>Theme</span></button>
+          <div class="settings-panel hidden" id="settingsPanel">
+            <div class="settings-title">Appearance</div>
+            <div class="theme-options">
+              <button type="button" class="theme-option" data-theme-choice="light"><span class="theme-swatch swatch-light"></span>Light</button>
+              <button type="button" class="theme-option" data-theme-choice="dark"><span class="theme-swatch swatch-dark"></span>Dark</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<header class="quiz-hero">
+  <div class="shell-narrow">
+    <span class="label">Diversion</span>
+    <h1>Where in the world<br>do you belong?</h1>
+    <p class="quiz-hero-lede">Ten questions about the kind of place that feels like yours — not your budget, not your subject, not your grades. At the end you get a country, and the universities in it.</p>
+  </div>
+</header>
+
+<section class="quiz-section" id="quiz">
+  <div class="shell-narrow">
+    <div class="quiz-card">
+      <div id="quizIntro" class="quiz-intro">
+        <p>Nothing is saved, nothing is sent anywhere, and nothing here is scored against real data. Answer honestly rather than sensibly — it works better that way.</p>
+        <button type="button" class="btn btn-primary" id="quizStart">Start the quiz <span class="arrow">&#8594;</span></button>
+      </div>
+
+      <div id="quizProgress" class="quiz-progress hidden">
+        <div class="quiz-bar-track"><div class="quiz-bar" id="quizBar"></div></div>
+        <span class="quiz-counter" id="quizCounter"></span>
+      </div>
+
+      <div id="quizStage" class="quiz-stage hidden">
+        <h2 class="quiz-question" id="quizQuestion" tabindex="-1"></h2>
+        <div class="quiz-options" id="quizOptions"></div>
+        <button type="button" class="quiz-back hidden" id="quizBack">&#8592; Previous question</button>
+      </div>
+
+      <div id="quizResult" class="hidden"></div>
+    </div>
+
+    <div class="ornament quiz-ornament" aria-hidden="true"><span></span><em>✦ ❧ ✦</em><span></span></div>
+
+    <p class="quiz-footnote">
+      Looking for somewhere you can actually afford? The <a href="index.html#tool">Match Finder</a> ranks countries by your tuition ceiling and monthly living budget, using figures linked to the universities' own pages.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="shell">
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand">Uni<span>Match</span></div>
+        <p class="foot-note" style="margin-top:10px;max-width:34ch">A budget-first university archive for students who read the fine print.</p>
+      </div>
+      <div class="foot-links">
+        <a href="index.html#dossier">The Method</a>
+        <a href="index.html#tool">Match Finder</a>
+        <a href="index.html#plates">Plates</a>
+        <a href="quiz.html">Quiz</a>
+        <a href="login.html">Log in</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>UniMatch — Free &amp; open university search</span>
+      <span>Saved locally · Nothing transmitted</span>
+    </div>
+  </div>
+</footer>
+
+<script src="account.js"></script>
+<script src="directory-meta.js"></script>
+<script src="directory-loader.js"></script>
+<script src="quiz.js"></script>
+<script src="quiz-ui.js"></script>
+<script src="theme.js"></script>
+</body>
+</html>

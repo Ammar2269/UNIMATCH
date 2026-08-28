@@ -55,6 +55,16 @@
 
   backBtn.onclick = ()=>{ if(index>0){ index--; renderQuestion(); } };
 
+  /* Windows renders regional-indicator flags as the bare letter pair rather than a
+     flag, so the code is drawn as a deliberate archival stamp instead of relying on
+     emoji support. */
+  function countryCode(flag){
+    const cps = [...String(flag || '')].map(c => c.codePointAt(0));
+    const letters = cps.filter(c => c >= 0x1F1E6 && c <= 0x1F1FF)
+                       .map(c => String.fromCharCode(c - 0x1F1E6 + 65));
+    return letters.length === 2 ? letters.join('') : '';
+  }
+
   function finish(){
     const outcome = scoreQuiz(answers);
     const d = outcome.best;
@@ -64,17 +74,17 @@
     result.innerHTML = `
       <div class="quiz-result-card">
         <span class="label">Your result</span>
-        <div class="quiz-flag" aria-hidden="true">${d.flag}</div>
+        <div class="quiz-stamp" aria-hidden="true"><span>${countryCode(d.flag)}</span></div>
         <h3>${d.country}</h3>
         <p class="quiz-cities">${d.city}</p>
         <p class="quiz-blurb">${d.blurb}</p>
-        <div class="quiz-alts">Also close: ${outcome.runnersUp.map(r=>`<span>${r.flag} ${r.country}</span>`).join('')}</div>
+        <div class="quiz-alts">Also close: ${outcome.runnersUp.map(r=>`<span>${r.country}</span>`).join('')}</div>
         <div class="quiz-result-actions">
           <button type="button" class="btn btn-primary" id="quizShowUnis">See universities in ${d.country} <span class="arrow">&#8594;</span></button>
           <button type="button" class="btn btn-ghost" id="quizRetake">Take it again</button>
         </div>
         <div id="quizUnis" class="quiz-unis hidden"></div>
-        <p class="quiz-disclaimer">This is a bit of fun, not advice. It ignores tuition, living costs, subject, and entry requirements entirely — for anything you would actually act on, use the Match Finder above.</p>
+        <p class="quiz-disclaimer">This is a bit of fun, not advice. It ignores tuition, living costs, subject, and entry requirements entirely — for anything you would actually act on, use the <a href="index.html#tool">Match Finder</a>.</p>
       </div>`;
 
     document.getElementById('quizRetake').onclick = start;
