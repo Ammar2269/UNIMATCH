@@ -79,7 +79,12 @@ const SUBJECT_SYNONYMS = {
   'Art Therapy':['art therapy'],
   'Art Education':['art education','art + design education','art and design education'],
   'Arts Management':['arts management','arts administration'],
-  'Curatorial Studies':['curatorial studies','curatorial practice']
+  'Curatorial Studies':['curatorial studies','curatorial practice'],
+  // Performing arts — the taxonomy had no home for conservatoire programmes
+  'Music':['music performance','music education','church music','folk music','jazz music','classical music','composition and music','conducting',' music,',' music '],
+  'Music Technology':['music technology'],
+  'Dance':['dance'],
+  'Theatre / Drama':['theatre','theater',' drama']
 };
 
 // Broad field groupings, purely for the two-step Field -> Major picker. Add any
@@ -92,7 +97,7 @@ const FIELD_CATEGORIES = {
   'Health & Medicine': ['Medicine','Nursing','Pharmacy','Dentistry'],
   'Law & Social Sciences': ['Law','Psychology','International Relations','Sociology'],
   'Sciences & Mathematics': ['Physics','Chemistry','Biology','Mathematics','Environmental Science','Agriculture'],
-  'Arts & Design': ['Architecture','Fine Arts','Painting','Drawing','Sculpture','Ceramics','Printmaking','Photography','Graphic Design','Fashion Design','Interior Design','Industrial Design','Product Design','Illustration','Textile Design','Package Design','Animation','Game Design','Interactive Media','Film Production','Television Production','Video Media Studies','Digital Arts','Art History','Art Therapy','Art Education','Arts Management','Curatorial Studies'],
+  'Arts & Design': ['Architecture','Fine Arts','Painting','Drawing','Sculpture','Ceramics','Printmaking','Photography','Graphic Design','Fashion Design','Interior Design','Industrial Design','Product Design','Illustration','Textile Design','Package Design','Animation','Game Design','Interactive Media','Film Production','Television Production','Video Media Studies','Digital Arts','Art History','Art Therapy','Art Education','Arts Management','Curatorial Studies','Music','Music Technology','Dance','Theatre / Drama'],
   'Media & Communication': ['Journalism / Media'],
   'Education': ['Education'],
 };
@@ -148,6 +153,10 @@ function parseRange(raw){
   return {min:Math.min(...values),max:Math.max(...values),known:true};
 }
 function inferLevel(p){
+  /* An imported record may state its level outright, which beats guessing from the
+     title — "Bachelor and Master of Music" is a bachelor-entry programme, but the
+     word "Master" in the name would otherwise misfile it. */
+  if(p.level==='bachelor'||p.level==='master'||p.level==='phd')return p.level;
   const s=text(p.program+' '+p.notes);
   if(/phd|doctor|doctoral/.test(s))return 'phd';
   if(/master|msc|m\.sc|ma\b/.test(s))return 'master';
