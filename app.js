@@ -141,9 +141,18 @@ function parseRange(raw){
     values.push(Number(m[2])*factor);
     if(m[3]) values.push(Number(m[3])*factor);
   });
-  if(!values.length && /pln/i.test(s)){
-    const pln=[...s.matchAll(/(\d+(?:\.\d+)?)\s*PLN/gi)].map(m=>Number(m[1])/4.3);
-    values.push(...pln);
+  /* Currency codes written out, e.g. "48,960 AUD/year". Indicative divisors to EUR
+     purely so budget matching can rank the record — the card always shows the
+     university's own figure and currency verbatim, never a converted one. */
+  if(!values.length){
+    const perEur={PLN:4.3,AUD:1.66,NZD:1.80,CAD:1.47,USD:0.92,GBP:0.85,CHF:0.94,
+                  SEK:11.2,NOK:11.7,DKK:7.46,CZK:25,HUF:390,RON:4.97,BGN:1.96,
+                  TRY:37,INR:90,JPY:160,CNY:7.8,HKD:8.5,SGD:1.45,AED:4.0,ZAR:20};
+    for(const code in perEur){
+      const hits=[...s.matchAll(new RegExp('(\\d+(?:\\.\\d+)?)\\s*'+code,'gi'))]
+        .map(m=>Number(m[1])/perEur[code]);
+      if(hits.length){values.push(...hits);break;}
+    }
   }
   if(!values.length){
     values=[...s.matchAll(/\b(\d{3,6}(?:\.\d+)?)\b/g)].map(m=>Number(m[1])).filter(n=>n<1900||n>2099);
