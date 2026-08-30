@@ -1,5 +1,5 @@
 /* ============================================================
-   Droga — vintage European editorial, modern execution
+   Latarina — vintage European editorial, modern execution
    Palette: deep green ink #284c45 · cream #f7f1e8 · sage #9fc39e
    ============================================================ */
 
@@ -8,7 +8,7 @@
   --paper:#f7f1e8;--paper-2:#efe5d4;--paper-3:#fffdf7;--paper-4:#e7dbc6;
   /* ink */
   --ink:#284c45;--ink-deep:#1a332e;--sage:#9fc39e;--sage-deep:#7ba67a;
-  --mark:#8bb08a;                      /* compass rose: a tint of the ink, as in the drawn logo */
+  --mark:#8bb08a;                      /* the lamp in the wordmark: a tint of the ink */
   /* accent used ON the ink-coloured CTA band. It must contrast with --ink, which
      flips to the light green in dark mode, so it cannot just be --sage. */
   --on-ink-accent:#9fc39e;
@@ -130,35 +130,35 @@ nav{position:relative;display:flex;align-items:center;justify-content:space-betw
 nav.open .nav-toggle span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
 nav.open .nav-toggle span:nth-child(2){opacity:0}
 nav.open .nav-toggle span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
-/* ---- wordmark: DR + compass rose + GA ----
+/* ---- wordmark: LATAR + lighthouse + NA ----
    The letters are real text so they stay crisp and pick up the theme colour;
-   only the rose is drawn. */
+   only the lighthouse standing in for the I is drawn. It is a letter, not an
+   ornament, so it keeps a letter's width and sits on the same baseline rule. */
 .brand{
   position:relative;font-family:var(--serif);font-size:25px;font-weight:600;
   letter-spacing:.15em;text-decoration:none;color:var(--text);
-  display:inline-flex;align-items:center;line-height:1;
+  display:inline-flex;align-items:baseline;line-height:1;
 }
 .brand-text{display:inline-block}
 .brand-mark{
   display:inline-flex;align-items:center;justify-content:center;
-  width:1.5em;height:1.5em;margin:0 -.12em 0 -.1em;flex-shrink:0;
-  color:var(--mark);
+  width:.42em;height:.95em;margin:0 .07em;flex-shrink:0;
+  color:var(--ink);
   transition:transform .6s cubic-bezier(.22,.61,.36,1);
 }
 .brand-mark svg{width:100%;height:100%;display:block;overflow:visible}
-.brand:hover .brand-mark{transform:rotate(45deg)}
+/* the beam widens rather than the mark spinning: a lighthouse turns its light,
+   not itself. */
+.brand-mark .lamp{fill:var(--mark)}
+.brand-mark .beam{opacity:.26;transition:opacity .5s ease}
+.brand:hover .brand-mark .beam{opacity:.62}
+.brand:hover .brand-mark{transform:translateY(-1px)}
 /* the rule the wordmark sits on, as in the drawn logo */
 .brand::before{
   content:'';position:absolute;left:-5%;right:-5%;top:50%;height:1px;
   background:var(--mark);opacity:.32;pointer-events:none;
 }
-.brand-mark .ns{display:none}
-.brand-full .brand-mark .ns{display:block}
-.brand-full .brand-mark .ns text{
-  font-family:var(--sans);font-size:17px;font-weight:600;letter-spacing:.04em;
-  fill:var(--mark);opacity:.85;
-}
-.brand-full .brand-mark .ns text.south{fill:var(--sage-deep)}
+.foot-brand .brand-mark .beam{opacity:.3}
 .nav-right{display:flex;align-items:center;gap:8px}
 .nav-link{
   font-size:13px;font-weight:500;letter-spacing:.02em;text-decoration:none;
